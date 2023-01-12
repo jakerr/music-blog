@@ -67,6 +67,22 @@
   width: var(--kb-white-width);
 }
 
+.tone-color-1.white {
+  background-color: hsl(140, 30%, 52%);
+}
+
+.tone-color-1.black {
+  background-color: hsl(140, 30%, 32%);
+}
+
+.tone-color-2.white {
+  background-color: hsl(333, 30%, 52%);
+}
+
+.tone-color-2.black {
+  background-color: hsl(333, 30%, 32%);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

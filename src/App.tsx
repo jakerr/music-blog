@@ -60,18 +60,18 @@ const Key: FC<{
 const Keys: FC<{
   from: Note,
   to: Note
-}> = ({from, to}) => {
+  size?: "small" | "medium" | "large"
+}> = ({from, to, size="large"}) => {
   const fromIndex = noteIndex(from);
   const toIndex = noteIndex(to);
-  const fromNote2 = noteForIndex(fromIndex);
-  const toNote2 = noteForIndex(toIndex);
   const allNoteIds = Array(toIndex - fromIndex).fill(0).map((i, idx) => i + idx + fromIndex);
   const allNotes = allNoteIds.map((noteId) => noteForIndex(noteId));
+  const sizeClass = size === "large" ? "kb-80vw" : (size === "medium" ? "kb-50vw" : "kb-20vw");
   console.log(`All notes ${allNoteIds}`);
   console.log(`All notes ${allNotes}`);
   return (
     <>
-    <div className='keyboard'>
+    <div className={`keyboard ${sizeClass}`}>
       {
       allNotes.map((note) => (
         <Key key={noteIndex(note)} note={note}></Key>
@@ -104,7 +104,7 @@ function App() {
         <p>
           This is a typical piano keyboard with three octaves starting on C and ending on the C three octaves higher.
         </p>
-        <Keys from={from} to={to}></Keys>
+        <Keys from={from} to={to} size="medium"></Keys>
         <p>
           The white notes are called "natural" notes and they have the names "C, D, E, F, G, A, B" repeating up the keyboard.
         </p>

@@ -7,8 +7,19 @@
   pointer-events: none;
 }
 
-.keyboard {
+.kb-80vw {
   --kb-width: 80vw;
+}
+
+.kb-50vw {
+  --kb-width: 50vw;
+}
+
+.kb-20vw {
+  --kb-width: 20vw;
+}
+
+.keyboard {
   --kb-height: calc(var(--kb-width) * 0.19);
   --kb-white-width: calc(var(--kb-width) / (7 * 3) - 2px);
   --kb-black-width: calc(var(--kb-white-width) * 0.5);

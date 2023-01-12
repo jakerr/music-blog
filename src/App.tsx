@@ -71,7 +71,7 @@ const Keys: FC<{
   console.log(`All notes ${allNotes}`);
   return (
     <>
-    <div className='key-board'>
+    <div className='keyboard'>
       {
       allNotes.map((note) => (
         <Key key={noteIndex(note)} note={note}></Key>

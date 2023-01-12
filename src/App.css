@@ -7,12 +7,21 @@
   pointer-events: none;
 }
 
-.key-board {
+.keyboard {
+  --kb-width: 80vw;
+  --kb-height: calc(var(--kb-width) * 0.19);
+  --kb-white-width: calc(var(--kb-width) / (7 * 3) - 2px);
+  --kb-black-width: calc(var(--kb-white-width) * 0.5);
+  --kb-black-height: calc(var(--kb-height) * 0.63);
+  --kb-black-inset: calc(-1 * var(--kb-black-width) / 2 - 1px);
+  --kb-key-rad: calc(var(--kb-white-width) * 0.1);
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: flex-start;
-  margin: 40px;
+  margin: 5vw;
+  width: var(--kb-width);
+  height: var(--kb-height);
 }
 
 .key {
@@ -20,7 +29,7 @@
   font-weight: 100;
   font-size: 12px;
   border: 1px solid rgba(32, 32, 32, 0.2);
-  border-radius: 0px 0px 5px 5px;
+  border-radius: 0px 0px var(--kb-key-rad) var(--kb-key-rad);
   cursor: pointer;
   box-shadow: 0px 5px 1px rgba(32, 32, 32, 0.2);
   -webkit-transition: margin 0.05s ease, background-color 0.05s ease,
@@ -32,10 +41,10 @@
   color: #ffffff;
   z-index: 1;
   text-shadow: 0px -1px 1px rgba(255, 255, 255, 0.5);
-  height: 120px;
-  width: 24px;
-  margin-left: -13px;
-  margin-right: -13px;
+  width: var(--kb-black-width);
+  height: var(--kb-black-height);
+  margin-left: var(--kb-black-inset);
+  margin-right: var(--kb-black-inset);
 }
 
 .white {
@@ -43,8 +52,8 @@
   color: rgb(32, 32, 32);
   z-index: 0;
   text-shadow: 0px 1px 1px rgba(32, 32, 32, 0.5);
-  height: 200px;
-  width: 40px;
+  height: var(--kb-height);
+  width: var(--kb-white-width);
 }
 
 @media (prefers-reduced-motion: no-preference) {

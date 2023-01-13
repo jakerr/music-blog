@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useInsertionEffect, useLayoutEffect, useState} from 'react';
 import logo from './logo.svg';
 import Slider from '@mui/material/Slider';
 import './App.css';
@@ -147,28 +147,46 @@ const Keys: FC<{
   highlighterList: KeyHighlighter[]
 }> = ({from, to, size="large", highlighterList=[]}) => {
   const [progress, setProgress] = useState(0.0)
-  const [keys, setKeys] = useState<Note[]>([]);
+  const [drawnProgress, setDrawnProgress] = useState(-1.0)
+  const [notes, setNotes] = useState<Note[] | null>(null);
 
+  // Initial effect to set up notes.
   useEffect(() => {
-    console.log("Use effect.")
-    for (const highlighter of highlighterList) {
-      highlighter.reset();
-    }
     const fromIndex = noteIndex(from);
     const toIndex = noteIndex(to);
     const allNoteIds = Array(toIndex - fromIndex).fill(0).map((i, idx) => i + idx + fromIndex);
     const allNotes = allNoteIds.map((noteId) => noteForIndex(noteId));
-    const animUpTo = Math.floor(progress * allNoteIds.length)
-    console.log(allNoteIds);
+    setNotes(allNotes);
+  }, [to, from]);
+
+  // Effect to update highlighting
+  useEffect(() => {
+    console.log(`Notes in use effect: ${notes ? notes.length : "no notes"}`)
+    if (!notes) {
+      console.log("Skip we don't have notes yet.");
+      return;
+    }
+    if (drawnProgress === progress) {
+      console.log("Skip draw as we already drew at this progress.");
+      return;
+    }
     for (const highlighter of highlighterList) {
-      allNotes.forEach((note, index) => {
+      highlighter.reset();
+    }
+    const animUpTo = Math.floor(progress * notes.length)
+    for (const highlighter of highlighterList) {
+      notes.forEach((note, index) => {
         if (!highlighter.shouldAnimate || index <= animUpTo) {
           highlighter?.accept(note);
         }
       });
     }
-    setKeys(allNotes);
-  }, [from, to, highlighterList, progress]);
+    setDrawnProgress(progress);
+    // Force render of notes since we changed the contents via highlighter.
+    setNotes(previousNotes => {
+      return previousNotes;
+    });
+  }, [notes, progress, drawnProgress, highlighterList]);
 
   const onSliderChange = (e: Event, value: number | number[], activeThumb: number) => {
     const singleNum = Array.isArray(value) ? value[0] : value;
@@ -181,7 +199,7 @@ const Keys: FC<{
     <>
     <div className={`keyboard ${sizeClass}`}>
       {
-      keys.map((note) => {
+      notes?.map((note) => {
         const highlight = note.highlight;
         if (highlight) {
           console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${highlight}`);

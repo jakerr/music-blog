@@ -1,5 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import logo from './logo.svg';
+import Slider from '@mui/material/Slider';
 import './App.css';
 
 type NaturalNote = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
@@ -67,11 +68,17 @@ class KeyHighlighter {
   parity: "odd" | "even" | "searching" = "searching";
   currentRun: number = 0;
   halfSteps: number = 0;
+  oddColor: string;
+  evenColor: string;
+  shouldAnimate: boolean = false;
 
  
-  constructor(start: Note, pattern: number[]) {
+  constructor(start: Note, pattern: number[], oddColor: string, evenColor: string, shouldAnimate: boolean) {
     this.start = start;
     this.pattern = pattern;
+    this.oddColor = oddColor;
+    this.evenColor = evenColor;
+    this.shouldAnimate = shouldAnimate;
   }
 
   reset() {
@@ -88,7 +95,7 @@ class KeyHighlighter {
   }
 
   doHighlight(note: Note) {
-    const color = this.parity === "odd" ?  "tone-color-1" : "tone-color-2";
+    const color = this.parity === "odd" ?  this.oddColor : this.evenColor;
     this.currentRun -= 1;
     note.highlight = color;
     console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${note.highlight}`);
@@ -137,23 +144,37 @@ const Keys: FC<{
   from: Note,
   to: Note,
   size?: "small" | "medium" | "large",
-  highlighter?: KeyHighlighter
-}> = ({from, to, size="large", highlighter}) => {
+  highlighterList: KeyHighlighter[]
+}> = ({from, to, size="large", highlighterList=[]}) => {
+  const [progress, setProgress] = useState(0.0)
   const [keys, setKeys] = useState<Note[]>([]);
 
   useEffect(() => {
     console.log("Use effect.")
-    highlighter?.reset();
+    for (const highlighter of highlighterList) {
+      highlighter.reset();
+    }
     const fromIndex = noteIndex(from);
     const toIndex = noteIndex(to);
     const allNoteIds = Array(toIndex - fromIndex).fill(0).map((i, idx) => i + idx + fromIndex);
     const allNotes = allNoteIds.map((noteId) => noteForIndex(noteId));
+    const animUpTo = Math.floor(progress * allNoteIds.length)
     console.log(allNoteIds);
-    for (var note of allNotes) {
-      highlighter?.accept(note);
+    for (const highlighter of highlighterList) {
+      allNotes.forEach((note, index) => {
+        if (!highlighter.shouldAnimate || index <= animUpTo) {
+          highlighter?.accept(note);
+        }
+      });
     }
     setKeys(allNotes);
-  }, [from, to, highlighter]);
+  }, [from, to, highlighterList, progress]);
+
+  const onSliderChange = (e: Event, value: number | number[], activeThumb: number) => {
+    const singleNum = Array.isArray(value) ? value[0] : value;
+    const newProgress = singleNum / 100.0;
+    setProgress(newProgress);
+  }
 
   const sizeClass = size === "large" ? "kb-80vw" : (size === "medium" ? "kb-50vw" : "kb-20vw");
   return (
@@ -171,6 +192,13 @@ const Keys: FC<{
        })
       }
     </div>
+    <Slider
+        size="small"
+        defaultValue={0}
+        aria-label="Small"
+        valueLabelDisplay="auto"
+        onChange={onSliderChange}
+      />
 
       {/* Notes from: {from.name}{from.acc}{from.oct} to: {to.name}{to.acc}{to.oct}
       ({fromIndex}) ~ ({toIndex})
@@ -190,8 +218,13 @@ function App() {
     name: "C",
     oct: 3,
   }
-  const tonic: Note = {...from, name:"F"}
-  const highlighter = new KeyHighlighter(tonic, [6]);
+  const sharp: Note = {...from, acc:"#"}
+  const highlighterList: KeyHighlighter[] = [
+    new KeyHighlighter(from, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
+    new KeyHighlighter(sharp, [6], "tone-color-2 lighten", "tone-color-1 lighten", false),
+    new KeyHighlighter(from, [2,3,2], "tone-color-1", "tone-color-2", true)
+  ];
+
   return (
     <div className="App">
       <header className="App-header">
@@ -199,7 +232,7 @@ function App() {
         <p>
           This is a typical piano keyboard with three octaves starting on C and ending on the C three octaves higher.
         </p>
-        <Keys from={from} to={to} size="large" highlighter={highlighter}></Keys>
+        <Keys from={from} to={to} size="large" highlighterList={highlighterList}></Keys>
         <p>
           The white notes are called "natural" notes and they have the names "C, D, E, F, G, A, B" repeating up the keyboard.
         </p>

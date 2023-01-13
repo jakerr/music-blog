@@ -68,20 +68,33 @@
   width: var(--kb-white-width);
 }
 
-.tone-color-1.white {
-  background-color: hsl(140, 30%, 52%);
+/* .black {
+  --tone-sat: 30%;
+  --tone-lt: 32%;
+} */
+
+.white, .black {
+  --tone-sat: 40%;
+  --tone-lt: 65%;
 }
 
-.tone-color-1.black {
-  background-color: hsl(140, 30%, 32%);
+/* .black.lighten {
+  --tone-sat: 50%;
+  --tone-lt: 20%;
+} */
+
+.white.lighten,
+.black.lighten {
+  --tone-sat: 50%;
+  --tone-lt: 90%;
 }
 
-.tone-color-2.white {
-  background-color: hsl(333, 30%, 52%);
+.tone-color-1 {
+  background-color: hsl(120, var(--tone-sat), var(--tone-lt));
 }
 
-.tone-color-2.black {
-  background-color: hsl(333, 30%, 32%);
+.tone-color-2 {
+  background-color: hsl(300, var(--tone-sat), var(--tone-lt));
 }
 
 @media (prefers-reduced-motion: no-preference) {

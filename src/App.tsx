@@ -190,8 +190,8 @@ function App() {
     name: "C",
     oct: 3,
   }
-  const am: Note = {...from, name:"A"}
-  const highlighter = new KeyHighlighter(am, [2,3,2]);
+  const tonic: Note = {...from, name:"F"}
+  const highlighter = new KeyHighlighter(tonic, [6]);
   return (
     <div className="App">
       <header className="App-header">
@@ -199,7 +199,7 @@ function App() {
         <p>
           This is a typical piano keyboard with three octaves starting on C and ending on the C three octaves higher.
         </p>
-        <Keys from={from} to={to} size="medium" highlighter={highlighter}></Keys>
+        <Keys from={from} to={to} size="large" highlighter={highlighter}></Keys>
         <p>
           The white notes are called "natural" notes and they have the names "C, D, E, F, G, A, B" repeating up the keyboard.
         </p>

@@ -100,6 +100,7 @@ class KeyHighlighter {
   patternIndex = 0;
   parity: "odd" | "even" | "searching" = "searching";
   currentRun: number = 0;
+  runTarget: number = 0;
   halfSteps: number = 0;
   oddColor: string;
   evenColor: string;
@@ -124,7 +125,7 @@ class KeyHighlighter {
   startRun(note: Note) {
     this.addBracket(note, "left");
     this.halfSteps = 0;
-    this.currentRun = this.pattern[this.patternIndex];
+    this.runTarget = this.pattern[this.patternIndex];
     this.patternIndex = this.patternIndex + 1;
     this.doHighlight(note);
   }
@@ -136,6 +137,12 @@ class KeyHighlighter {
     }
   }
 
+  addBracketLabel(note: Note, label: string) {
+    if (this.shouldAnimate) {
+      note.bracketLabel = label;
+    }
+  }
+
   endRun(note: Note) {
     this.addBracket(note, "right");
     this.parity = this.parity === "odd" ?  "even" : "odd";
@@ -143,15 +150,16 @@ class KeyHighlighter {
       this.parity = "searching";
       this.patternIndex = 0;
     }
-    
+    this.currentRun = 0;
   }
 
   doHighlight(note: Note) {
     const color = this.parity === "odd" ?  this.oddColor : this.evenColor;
-    this.currentRun -= 1;
+    this.currentRun += 1;
     note.highlight = color;
+    this.addBracketLabel(note, `${this.currentRun}`);
     console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${note.highlight}`);
-    if (this.currentRun <= 0) {
+    if (this.currentRun >= this.runTarget) {
       this.endRun(note);
     }
   }
@@ -299,7 +307,7 @@ function App() {
   const highlighterList: KeyHighlighter[] = [
     new KeyHighlighter(from, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
     new KeyHighlighter(sharp, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
-    new KeyHighlighter(aSharp, [2,3,2], "tone-color-1", "tone-color-2", true)
+    new KeyHighlighter(aSharp, [3,4], "tone-color-1", "tone-color-2", true)
   ];
 
   return (

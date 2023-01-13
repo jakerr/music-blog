@@ -106,7 +106,7 @@
 
 .key-bracket {
   height: 2em;
-  margin-top: -2.1em;
+  margin-top: -2.4em;
   display: flex;
   justify-content: center;
   visibility:hidden;
@@ -138,8 +138,6 @@
   margin-left: var(--kb-bracket-inset);
 }
 
-
-
 .key-bracket.left {
     visibility:visible;
     border-left: 1px solid var(--tone-color);
@@ -157,9 +155,15 @@
 
 .key-bracket-label {
   text-align: center;
-  background-color: cadetblue;
+  background-color: var(--tone-color);
   height: fit-content;
-  font-size: 1.5em;
+  color:#292f3b;
+  font-size: 1em;
+  padding: 1px;
+}
+
+.key-bracket-label:empty {
+  display: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {

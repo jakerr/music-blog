@@ -2,6 +2,7 @@ import React, {FC, useEffect, useInsertionEffect, useLayoutEffect, useState} fro
 import logo from './logo.svg';
 import Slider from '@mui/material/Slider';
 import './App.css';
+import { threadId } from 'worker_threads';
 
 type NaturalNote = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
 type Accidental = '#' | 'b' | undefined 
@@ -9,7 +10,10 @@ type Note = {
   name: NaturalNote,
   acc?: Accidental,
   oct: number,
-  highlight?: string
+  highlight?: string,
+  bracket?: "left" | "middle" | "right" | "solo",
+  bracketColor?: "bracket-color-1" | "bracket-color-2",
+  bracketLabel?: string,
 }
 const CHROMA = "C_D_EF_G_A_B";
 
@@ -49,14 +53,43 @@ const noteColor = (note: Note): string => {
   return offset === 0 ? "white" : "black";
 }
 
+type KeyBrackey = "left" | "middle" | "right"
+
+function bracketClass(bracket?: "left" | "middle" | "right" | "solo") {
+  let classString: string;
+  
+  switch (bracket) {
+    case "left":
+      classString = "left middle";
+      break;
+    case "middle":
+      classString = "middle";
+      break;
+    case "right":
+      classString = "middle right";
+      break;
+    case "solo":
+      classString = "left middle right";
+      break;
+    default:
+      classString = "";
+  }
+  return classString;
+}
+
 const Key: FC<{
   note: Note,
-  highlight?: string
-}> = ({note, highlight}) => {
+}> = ({note}) => {
   const blackWhite = noteColor(note);
-  const hl = highlight ?? "";
+  const hl = note.highlight ?? "";
+  const bracketCss = bracketClass(note.bracket);
+  const bracketColor = note.bracketColor;
+  const noteCss = `note-${note.name}${note.acc ? "s" : ""}`
   return (
-    <div className={`key ${blackWhite} ${hl}`}>
+    <div className={`key ${blackWhite} ${hl} ${noteCss}`}>
+      <div className={`key-bracket ${bracketCss} ${bracketColor}`}>
+        <div className={`key-bracket-label`}>{note.bracketLabel}</div>
+      </div>
     </div>
   )
 }
@@ -88,10 +121,29 @@ class KeyHighlighter {
     this.patternIndex = 0;
   }
 
-  startRun() {
+  startRun(note: Note) {
+    this.addBracket(note, "left");
     this.halfSteps = 0;
     this.currentRun = this.pattern[this.patternIndex];
     this.patternIndex = this.patternIndex + 1;
+    this.doHighlight(note);
+  }
+
+  addBracket(note: Note, bracket: "left" | "right" | "middle") {
+    if (this.shouldAnimate) {
+      note.bracket = bracket;
+      note.bracketColor = this.parity === "odd" ? "bracket-color-1" : "bracket-color-2";
+    }
+  }
+
+  endRun(note: Note) {
+    this.addBracket(note, "right");
+    this.parity = this.parity === "odd" ?  "even" : "odd";
+    if (this.patternIndex >= this.pattern.length) {
+      this.parity = "searching";
+      this.patternIndex = 0;
+    }
+    
   }
 
   doHighlight(note: Note) {
@@ -100,24 +152,19 @@ class KeyHighlighter {
     note.highlight = color;
     console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${note.highlight}`);
     if (this.currentRun <= 0) {
-      this.parity = this.parity === "odd" ?  "even" : "odd";
-      if (this.patternIndex >= this.pattern.length) {
-        this.parity = "searching";
-        this.patternIndex = 0;
-        console.log("🔻 pattern idx oob after highlighting: " + note.name);
-      }
+      this.endRun(note);
     }
   }
  
   accept(note: Note) {
     const targetName = this.start.name + (this.start.acc ?? "");
     const noteName = note.name + (note.acc ?? "");
+    note.bracket = undefined;
     // Not yet highlighting
     if (this.parity === "searching") {
       if(targetName === noteName) {
         this.parity = noteIndex(note) % 2 === 0 ? "odd" : "even";
-        this.startRun();
-        this.doHighlight(note);
+        this.startRun(note);
         return;
       }
       console.log(`🔻 searching for ${targetName} does not match ${noteName}.`);
@@ -126,16 +173,15 @@ class KeyHighlighter {
 
     this.halfSteps += 1;
     if (this.currentRun <= 0) {
-      this.startRun();
-      this.doHighlight(note);
+      this.startRun(note);
       return;
     }
 
+    this.addBracket(note, "middle");
     if (this.halfSteps % 2 === 0) {
       this.doHighlight(note);
       return;
     }
-    // console.log("🔻 no highlight for " + noteName);
     return;
   }
 }
@@ -149,6 +195,22 @@ const Keys: FC<{
   const [progress, setProgress] = useState(0.0)
   const [drawnProgress, setDrawnProgress] = useState(-1.0)
   const [notes, setNotes] = useState<Note[] | null>(null);
+
+  // Animate in.
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const intervalId = setInterval(() => {
+        setProgress(p => {
+          const keyPerc = 1 / 37;
+          if (p + keyPerc >= 1) {
+            clearInterval(intervalId);
+          }
+          return p + (1 / 37)
+        });
+      }, 14);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   // Initial effect to set up notes.
   useEffect(() => {
@@ -200,12 +262,8 @@ const Keys: FC<{
     <div className={`keyboard ${sizeClass}`}>
       {
       notes?.map((note) => {
-        const highlight = note.highlight;
-        if (highlight) {
-          console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${highlight}`);
-        }
         return (
-          <Key key={noteIndex(note)} note={note} highlight={highlight}></Key>
+          <Key key={noteIndex(note)} note={note}></Key>
          )
        })
       }

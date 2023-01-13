@@ -25,6 +25,7 @@
   --kb-black-width: calc(var(--kb-white-width) * 0.5);
   --kb-black-height: calc(var(--kb-height) * 0.63);
   --kb-black-inset: calc(-1 * var(--kb-black-width) / 2 - 1px);
+  --kb-bracket-inset: calc(1 * var(--kb-black-width) / 2);
   --kb-key-rad: calc(var(--kb-white-width) * 0.1);
   display: flex;
   flex-direction: row;
@@ -48,6 +49,7 @@
     box-shadow 0.05s ease;
 }
 
+
 .black {
   background-color: rgb(32, 32, 32);
   color: #ffffff;
@@ -68,20 +70,10 @@
   width: var(--kb-white-width);
 }
 
-/* .black {
-  --tone-sat: 30%;
-  --tone-lt: 32%;
-} */
-
 .white, .black {
   --tone-sat: 40%;
   --tone-lt: 65%;
 }
-
-/* .black.lighten {
-  --tone-sat: 50%;
-  --tone-lt: 20%;
-} */
 
 .white.lighten,
 .black.lighten {
@@ -89,12 +81,85 @@
   --tone-lt: 90%;
 }
 
+.key-bracket {
+  --tone-sat: 50%;
+  --tone-lt: 85%;
+}
+
 .tone-color-1 {
-  background-color: hsl(120, var(--tone-sat), var(--tone-lt));
+  --tone-color: hsl(120, var(--tone-sat), var(--tone-lt));
+  background-color: var(--tone-color);
 }
 
 .tone-color-2 {
-  background-color: hsl(300, var(--tone-sat), var(--tone-lt));
+  --tone-color: hsl(300, var(--tone-sat), var(--tone-lt));
+  background-color: var(--tone-color);
+}
+
+.bracket-color-1 {
+  --tone-color: hsl(120, var(--tone-sat), var(--tone-lt));
+}
+
+.bracket-color-2 {
+  --tone-color: hsl(300, var(--tone-sat), var(--tone-lt));
+}
+
+.key-bracket {
+  height: 2em;
+  margin-top: -2.1em;
+  display: flex;
+  justify-content: center;
+  visibility:hidden;
+  margin-left: -1px;
+  margin-right: -1px;
+}
+
+.key-bracket.left {
+  margin-left: 1px;
+}
+
+.key-bracket.right {
+  margin-right: 1px;
+}
+
+.note-C > .key-bracket,
+.note-D > .key-bracket,
+.note-F > .key-bracket,
+.note-G > .key-bracket,
+.note-A > .key-bracket {
+  margin-right: var(--kb-bracket-inset);
+}
+
+.note-D > .key-bracket,
+.note-E > .key-bracket,
+.note-G > .key-bracket,
+.note-A > .key-bracket,
+.note-B > .key-bracket {
+  margin-left: var(--kb-bracket-inset);
+}
+
+
+
+.key-bracket.left {
+    visibility:visible;
+    border-left: 1px solid var(--tone-color);
+}
+
+.key-bracket.right {
+    visibility:visible;
+    border-right: 1px solid var(--tone-color);
+}
+
+.key-bracket.middle {
+    visibility:visible;
+    border-top: 1px solid var(--tone-color);
+}
+
+.key-bracket-label {
+  text-align: center;
+  background-color: cadetblue;
+  height: fit-content;
+  font-size: 1.5em;
 }
 
 @media (prefers-reduced-motion: no-preference) {

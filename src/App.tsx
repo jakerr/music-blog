@@ -115,7 +115,7 @@ class KeyHighlighter {
     // Not yet highlighting
     if (this.parity === "searching") {
       if(targetName === noteName) {
-        this.parity = "odd";
+        this.parity = noteIndex(note) % 2 === 0 ? "odd" : "even";
         this.startRun();
         this.doHighlight(note);
         return;
@@ -173,7 +173,7 @@ const Keys: FC<{
     for (const highlighter of highlighterList) {
       highlighter.reset();
     }
-    const animUpTo = Math.floor(progress * notes.length)
+    const animUpTo = progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
         if (!highlighter.shouldAnimate || index <= animUpTo) {
@@ -237,10 +237,11 @@ function App() {
     oct: 3,
   }
   const sharp: Note = {...from, acc:"#"}
+  const aSharp: Note = {...from, name: "C", acc:"#"}
   const highlighterList: KeyHighlighter[] = [
     new KeyHighlighter(from, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
-    new KeyHighlighter(sharp, [6], "tone-color-2 lighten", "tone-color-1 lighten", false),
-    new KeyHighlighter(from, [2,3,2], "tone-color-1", "tone-color-2", true)
+    new KeyHighlighter(sharp, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
+    new KeyHighlighter(aSharp, [2,3,2], "tone-color-1", "tone-color-2", true)
   ];
 
   return (

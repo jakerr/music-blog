@@ -1,10 +1,12 @@
 import { Note, noteIndex } from './App';
 
+type HighlighterColor = "color-1" | "color-2"
+
 type KeyHighlighterOptions = {
   startNote: Note,
   pattern: number[],
-  oddColor: string,
-  evenColor: string,
+  oddColor: HighlighterColor,
+  evenColor: HighlighterColor,
   shouldAnimate: boolean,
   bracketStyle: "none" | "scale-num" | "run-num" | "whole-half",
 }
@@ -35,7 +37,13 @@ export class KeyHighlighter {
   }
 
   startRun(note: Note) {
-    this.addBracket(note, "left");
+    let bracketPos: "left" | "middle" | "right" = "left";
+    if (this.opts.bracketStyle === "whole-half") {
+      if (this.scaleNumber > 1) {
+        bracketPos = "middle";
+      }
+    }
+    this.addBracket(note, bracketPos);
     this.halfSteps = 0;
     this.runTarget = this.opts.pattern[this.patternIndex];
     this.patternIndex = this.patternIndex + 1;
@@ -45,7 +53,7 @@ export class KeyHighlighter {
   addBracket(note: Note, bracket: "left" | "right" | "middle") {
     if (this.opts.bracketStyle !== "none") {
       note.bracket = bracket;
-      note.bracketColor = this.parity === "odd" ? "bracket-color-1" : "bracket-color-2";
+      note.bracketColor = this.parity === "odd" ? `bracket-${this.opts.oddColor}` : `bracket-${this.opts.evenColor}`;
     }
   }
 
@@ -74,7 +82,13 @@ export class KeyHighlighter {
   }
 
   endRun(note: Note) {
-    this.addBracket(note, "right");
+    let bracketPos: "left" | "middle" | "right" = "right";
+    if (this.opts.bracketStyle === "whole-half") {
+      if (this.scaleNumber > 1 && this.scaleNumber < 7) {
+        bracketPos = "middle";
+      }
+    }
+    this.addBracket(note, bracketPos);
     this.parity = this.parity === "odd" ? "even" : "odd";
     if (this.patternIndex >= this.opts.pattern.length) {
       this.parity = "searching";
@@ -85,12 +99,11 @@ export class KeyHighlighter {
   }
 
   doHighlight(note: Note) {
-    const color = this.parity === "odd" ? this.opts.oddColor : this.opts.evenColor;
+    const color = this.parity === "odd" ? `tone-${this.opts.oddColor}` : `tone-${this.opts.evenColor}`;
     this.currentRun += 1;
     this.scaleNumber += 1;
     note.highlight = color;
     this.addBracketLabel(note);
-    console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${note.highlight}`);
     if (this.currentRun >= this.runTarget) {
       this.endRun(note);
     }

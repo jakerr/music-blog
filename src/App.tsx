@@ -147,6 +147,8 @@ const Keys: FC<{
     const animUpTo = progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
+        note.bracket = undefined;
+        note.highlight = undefined;
         if (!highlighter.opts.shouldAnimate || index <= animUpTo) {
           highlighter?.accept(note);
         }
@@ -195,40 +197,40 @@ const Keys: FC<{
 }
 
 function App() {
-  const from: Note = {
+  const C0: Note = {
     name: "C",
     oct: 0,
   }
-  const to: Note = {
+  const C3: Note = {
     name: "C",
     oct: 3,
   }
-  const sharp: Note = {...from, acc:"#"}
-  const aSharp: Note = {...from, name: "C", acc:"#"}
+  const sharp: Note = {...C0, acc:"#"}
+  const aSharp: Note = {...C0, name: "C", acc:"#"}
   const highlighterList: KeyHighlighter[] = [
-    new KeyHighlighter({
-        startNote: from,
-        pattern: [6],
-        oddColor: "tone-color-1 lighten",
-        evenColor: "tone-color-2 lighten",
-        shouldAnimate: false,
-        bracketStyle : "none" 
-    }),
+    // new KeyHighlighter({
+    //     startNote: from,
+    //     pattern: [6],
+    //     oddColor: "tone-color-1 lighten",
+    //     evenColor: "tone-color-2 lighten",
+    //     shouldAnimate: false,
+    //     bracketStyle : "none" 
+    // }),
+    // new KeyHighlighter({
+    //     startNote: sharp,
+    //     pattern: [6],
+    //     oddColor: "tone-color-1 lighten",
+    //     evenColor: "tone-color-2 lighten",
+    //     shouldAnimate: false,
+    //     bracketStyle : "none" 
+    // }),
     new KeyHighlighter({
         startNote: sharp,
-        pattern: [6],
-        oddColor: "tone-color-1 lighten",
-        evenColor: "tone-color-2 lighten",
-        shouldAnimate: false,
-        bracketStyle : "none" 
-    }),
-    new KeyHighlighter({
-        startNote: aSharp,
         pattern: [3,4],
-        oddColor: "tone-color-1",
-        evenColor: "tone-color-2",
+        oddColor: "color-1",
+        evenColor: "color-1",
         shouldAnimate: true,
-        bracketStyle : "run-num" 
+        bracketStyle : "whole-half" 
     })
   ];
 
@@ -239,7 +241,7 @@ function App() {
         <p>
           This is a typical piano keyboard with three octaves starting on C and ending on the C three octaves higher.
         </p>
-        <Keys from={from} to={to} size="large" highlighterList={highlighterList}></Keys>
+        <Keys from={C0} to={C3} size="large" highlighterList={highlighterList}></Keys>
         <p>
           The white notes are called "natural" notes and they have the names "C, D, E, F, G, A, B" repeating up the keyboard.
         </p>

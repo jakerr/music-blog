@@ -3,10 +3,11 @@ import logo from './logo.svg';
 import Slider from '@mui/material/Slider';
 import './App.css';
 import { threadId } from 'worker_threads';
+import { KeyHighlighter } from './KeyHighlighter';
 
 type NaturalNote = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
 type Accidental = '#' | 'b' | undefined 
-type Note = {
+export type Note = {
   name: NaturalNote,
   acc?: Accidental,
   oct: number,
@@ -26,7 +27,7 @@ const accidentalOffset = (acc: Accidental): number => {
   return 0;
 }
 
-const noteIndex = (note: Note): number => {
+export const noteIndex = (note: Note): number => {
   const offset = accidentalOffset(note.acc);
   const noteOrder = (CHROMA.indexOf(note.name) + offset);
   return note.oct * 12 + noteOrder;
@@ -94,106 +95,6 @@ const Key: FC<{
   )
 }
 
-class KeyHighlighter {
-  start: Note;
-  pattern: number[];
-  patternIndex = 0;
-  parity: "odd" | "even" | "searching" = "searching";
-  currentRun: number = 0;
-  runTarget: number = 0;
-  halfSteps: number = 0;
-  oddColor: string;
-  evenColor: string;
-  shouldAnimate: boolean = false;
-
- 
-  constructor(start: Note, pattern: number[], oddColor: string, evenColor: string, shouldAnimate: boolean) {
-    this.start = start;
-    this.pattern = pattern;
-    this.oddColor = oddColor;
-    this.evenColor = evenColor;
-    this.shouldAnimate = shouldAnimate;
-  }
-
-  reset() {
-    this.parity = "searching";
-    this.currentRun = 0;
-    this.halfSteps = 0;
-    this.patternIndex = 0;
-  }
-
-  startRun(note: Note) {
-    this.addBracket(note, "left");
-    this.halfSteps = 0;
-    this.runTarget = this.pattern[this.patternIndex];
-    this.patternIndex = this.patternIndex + 1;
-    this.doHighlight(note);
-  }
-
-  addBracket(note: Note, bracket: "left" | "right" | "middle") {
-    if (this.shouldAnimate) {
-      note.bracket = bracket;
-      note.bracketColor = this.parity === "odd" ? "bracket-color-1" : "bracket-color-2";
-    }
-  }
-
-  addBracketLabel(note: Note, label: string) {
-    if (this.shouldAnimate) {
-      note.bracketLabel = label;
-    }
-  }
-
-  endRun(note: Note) {
-    this.addBracket(note, "right");
-    this.parity = this.parity === "odd" ?  "even" : "odd";
-    if (this.patternIndex >= this.pattern.length) {
-      this.parity = "searching";
-      this.patternIndex = 0;
-    }
-    this.currentRun = 0;
-  }
-
-  doHighlight(note: Note) {
-    const color = this.parity === "odd" ?  this.oddColor : this.evenColor;
-    this.currentRun += 1;
-    note.highlight = color;
-    this.addBracketLabel(note, `${this.currentRun}`);
-    console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${note.highlight}`);
-    if (this.currentRun >= this.runTarget) {
-      this.endRun(note);
-    }
-  }
- 
-  accept(note: Note) {
-    const targetName = this.start.name + (this.start.acc ?? "");
-    const noteName = note.name + (note.acc ?? "");
-    note.bracket = undefined;
-    // Not yet highlighting
-    if (this.parity === "searching") {
-      if(targetName === noteName) {
-        this.parity = noteIndex(note) % 2 === 0 ? "odd" : "even";
-        this.startRun(note);
-        return;
-      }
-      console.log(`🔻 searching for ${targetName} does not match ${noteName}.`);
-      return;
-    }
-
-    this.halfSteps += 1;
-    if (this.currentRun <= 0) {
-      this.startRun(note);
-      return;
-    }
-
-    this.addBracket(note, "middle");
-    if (this.halfSteps % 2 === 0) {
-      this.doHighlight(note);
-      return;
-    }
-    return;
-  }
-}
-
 const Keys: FC<{
   from: Note,
   to: Note,
@@ -246,7 +147,7 @@ const Keys: FC<{
     const animUpTo = progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
-        if (!highlighter.shouldAnimate || index <= animUpTo) {
+        if (!highlighter.opts.shouldAnimate || index <= animUpTo) {
           highlighter?.accept(note);
         }
       });
@@ -305,9 +206,30 @@ function App() {
   const sharp: Note = {...from, acc:"#"}
   const aSharp: Note = {...from, name: "C", acc:"#"}
   const highlighterList: KeyHighlighter[] = [
-    new KeyHighlighter(from, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
-    new KeyHighlighter(sharp, [6], "tone-color-1 lighten", "tone-color-2 lighten", false),
-    new KeyHighlighter(aSharp, [3,4], "tone-color-1", "tone-color-2", true)
+    new KeyHighlighter({
+        startNote: from,
+        pattern: [6],
+        oddColor: "tone-color-1 lighten",
+        evenColor: "tone-color-2 lighten",
+        shouldAnimate: false,
+        shouldShowBracket: false
+    }),
+    new KeyHighlighter({
+        startNote: sharp,
+        pattern: [6],
+        oddColor: "tone-color-1 lighten",
+        evenColor: "tone-color-2 lighten",
+        shouldAnimate: false,
+        shouldShowBracket: false
+    }),
+    new KeyHighlighter({
+        startNote: aSharp,
+        pattern: [3,4],
+        oddColor: "tone-color-1",
+        evenColor: "tone-color-2",
+        shouldAnimate: true,
+        shouldShowBracket: true
+    })
   ];
 
   return (

@@ -212,7 +212,7 @@ function App() {
         oddColor: "tone-color-1 lighten",
         evenColor: "tone-color-2 lighten",
         shouldAnimate: false,
-        shouldShowBracket: false
+        bracketStyle : "none" 
     }),
     new KeyHighlighter({
         startNote: sharp,
@@ -220,7 +220,7 @@ function App() {
         oddColor: "tone-color-1 lighten",
         evenColor: "tone-color-2 lighten",
         shouldAnimate: false,
-        shouldShowBracket: false
+        bracketStyle : "none" 
     }),
     new KeyHighlighter({
         startNote: aSharp,
@@ -228,7 +228,7 @@ function App() {
         oddColor: "tone-color-1",
         evenColor: "tone-color-2",
         shouldAnimate: true,
-        shouldShowBracket: true
+        bracketStyle : "run-num" 
     })
   ];
 

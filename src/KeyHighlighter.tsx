@@ -6,7 +6,7 @@ type KeyHighlighterOptions = {
   oddColor: string,
   evenColor: string,
   shouldAnimate: boolean,
-  shouldShowBracket: boolean
+  bracketStyle: "none" | "scale-num" | "run-num" | "whole-half",
 }
 
 
@@ -16,6 +16,7 @@ export class KeyHighlighter {
   patternIndex = 0;
   parity: "odd" | "even" | "searching" = "searching";
   currentRun: number = 0;
+  scaleNumber: number = 0;
   runTarget: number = 0;
   halfSteps: number = 0;
   step: "root" | "half" | "whole" = "root";
@@ -27,6 +28,7 @@ export class KeyHighlighter {
   reset() {
     this.parity = "searching";
     this.currentRun = 0;
+    this.scaleNumber = 0;
     this.halfSteps = 0;
     this.patternIndex = 0;
     this.step = "root";
@@ -41,16 +43,33 @@ export class KeyHighlighter {
   }
 
   addBracket(note: Note, bracket: "left" | "right" | "middle") {
-    if (this.opts.shouldShowBracket) {
+    if (this.opts.bracketStyle !== "none") {
       note.bracket = bracket;
       note.bracketColor = this.parity === "odd" ? "bracket-color-1" : "bracket-color-2";
     }
   }
 
-  addBracketLabel(note: Note, label: string) {
-    if (this.opts.shouldShowBracket) {
-      const wh = this.step.charAt(0)
-      note.bracketLabel = `${label}(${wh})`;
+  addBracketLabel(note: Note) {
+    if (this.opts.bracketStyle !== "none") {
+      let label = ""
+      switch (this.opts.bracketStyle) {
+        case 'run-num':
+          label = `${this.currentRun}`
+          break;
+
+        case 'scale-num':
+          label = `${this.scaleNumber}`
+          break;
+
+        case 'whole-half':
+          label = "" + this.step.charAt(0);
+          break;
+      
+        default:
+          break;
+      }
+
+      note.bracketLabel = `${label}`;
     }
   }
 
@@ -68,8 +87,9 @@ export class KeyHighlighter {
   doHighlight(note: Note) {
     const color = this.parity === "odd" ? this.opts.oddColor : this.opts.evenColor;
     this.currentRun += 1;
+    this.scaleNumber += 1;
     note.highlight = color;
-    this.addBracketLabel(note, `${this.currentRun}`);
+    this.addBracketLabel(note);
     console.log(`Highlight ${note.name}${note.acc ?? ""}${note.oct} with ${note.highlight}`);
     if (this.currentRun >= this.runTarget) {
       this.endRun(note);
@@ -85,6 +105,7 @@ export class KeyHighlighter {
       if (targetName === noteName) {
         this.parity = noteIndex(note) % 2 === 0 ? "odd" : "even";
         this.step = this.halfSteps === 0 ? "root" : "half";
+        this.scaleNumber = 0;
         this.startRun(note);
         return;
       }

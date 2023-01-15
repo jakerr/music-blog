@@ -35,6 +35,11 @@ export class ModeBuilder {
     return this;
   }
 
+  AlternatingWholeTones() {
+    this._opts.pattern(Array(12).fill(1));
+    return this;
+  }
+
   WholeTone() {
     this._opts.pattern([6]);
     return this;

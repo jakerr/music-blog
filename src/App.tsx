@@ -13,7 +13,7 @@ export type Note = {
   highlight?: string;
   bracket?: "left" | "middle" | "right" | "solo";
   bracketColor?:
-    | "bracket-color-1"
+    "bracket-color-1"
     | "bracket-color-2"
     | "bracket-color-1 lighten"
     | "bracket-color-2 lighten";
@@ -206,6 +206,10 @@ const C0: Note = {
   name: "C",
   oct: 0,
 };
+const B0: Note = {
+  name: "B",
+  oct: 0,
+};
 const D0: Note = {
   name: "D",
   oct: 0,
@@ -217,8 +221,7 @@ const C3: Note = {
 const CS0: Note = { ...C0, acc: "#" };
 
 const WholeToneLightBG: KeyHighlighter[] = [
-  new ModeBuilder(C0).WholeTone().ColorDualLight().build(),
-  new ModeBuilder(CS0).WholeTone().ColorDualLight().build(),
+  new ModeBuilder(C0).AlternatingWholeTones().ColorDualLight().build(),
 ];
 
 function Introduction() {
@@ -290,6 +293,135 @@ function TraditionalMethod() {
   );
 }
 
+function WholeToneScales() {
+  const builder = new ModeBuilder(C0)
+    .WholeTone()
+    .ColorSingleFirst()
+    .BracketsScaleNumbers()
+    .Animate();
+  const CWhole: KeyHighlighter[] = [builder.build()];
+  builder.Note(CS0);
+  builder.ColorSingleSecond()
+  const CSWhole: KeyHighlighter[] = [builder.build()];
+  const WholeZipped: KeyHighlighter[] = [
+    new ModeBuilder(C0).WholeTone().build(),
+    builder.build(),
+  ];
+  return (
+    <>
+      <h2>Detour - The Whole Tone Scales</h2>
+      <h3>... of which there are two.</h3>
+      <p>
+        We have one more stop before we can apply the non-standard approach to
+        building the major scales, that is, to become familiar with the whole
+        tone scales.
+        <br />
+        <br />
+        The whole tone scales are the scales you get when you start on a note
+        and jump whole steps all the way up the keyboard until the next octave.
+        You'll notice that whereever you start there are always 6 whole steps
+        before the pattern repeats.
+        <br />
+        <br />
+        So starting on C we can make a whole tone scale like this:
+      </p>
+      <Keys from={C0} to={C3} size="large" highlighterList={CWhole}></Keys>
+      <p>
+        If we apply that same pattern but start on the next key up from
+        'C' which is 'C#' we get this pattern for the C-sharp whole-tone scale:
+      </p>
+      <Keys from={C0} to={C3} size="large" highlighterList={CSWhole}></Keys>
+      <p>
+        Notice how these two scales look quite similar but are somewhat like mirror images of one another.
+        Another interesting thing to notice is how the white keys that surround
+        a cluster of black keys belong to the whole-tone scale of the
+        <strong>other</strong> cluster of black keys. For example, C, D, E
+        surround the cluster of two black keys (C# and D#) but they are in the
+        same whole tone scale as the three black key cluster (F#, G#, A#).
+        <br/><br/>
+        Going forward its going to be very useful to start thinking of these two
+        scales in a visual way and starting to become familiar with their shapes
+        and the relationship between which black keys and white keys belong to
+        the same whole tone scales. I recommend playing with the two diagrams
+        above until it starts making sense and becomes intuitive to you
+        visually.
+      </p>
+      <h3>... putting them togehter</h3>
+      <p>
+        Since these two whole-tone scales comprise every note on the keyboard
+        but have no overlap we can visualize the keyboard as if it were made of
+        these two scales zipped together:
+      </p>
+      <Keys from={C0} to={C3} size="large" highlighterList={WholeZipped}></Keys>
+    </>
+  );
+}
+
+function MajorScalePattern() {
+  const builder = new ModeBuilder(C0)
+    .Ionian()
+    .ColorDual()
+    .BracketsRunNumbers()
+    .Animate();
+  const CMaj = builder.build();
+  builder.Note(D0);
+  const DMaj = builder.build();
+  builder.Note(B0);
+  const BMaj = builder.build();
+  return (
+    <>
+      <h2>Major Scales</h2>
+      <h3>The Whole-Tone Cluster Method</h3>
+      <p>
+        Now that we're familiar with the whole tone scales. Let's look at the C
+        major scale again (the scale that is  all the white keys from C up to
+        the next octave). This time instead of counting (w, w, h, w, w, w, h)
+        let's just see where the notes of C major land on our established
+        whole-tone scales.
+        <br />
+        <br />
+        If we highlight the keyboard with the whole-tone scale on the keyboard
+        and then look at the C major scale we'll notice a pattern:
+      </p>
+      <Keys from={C0} to={C3} size="large" highlighterList={[
+        ...WholeToneLightBG,
+        CMaj
+      ]}></Keys>
+      <p>
+        As you can see above the C major scale is a pattern of 3 whole-tones from one scale, and then 4 from the other.
+        <br/>
+        I hope you'll agree that this much easier to rember than the traditional
+        (w, w, h, w, w, w, h) formula, and maybe more importantly, you can just
+        see the shape of the scale by really paying attention to that cluster of
+        3 next to a cluster of 4.
+        <br/>
+        <br/>
+        Let's try this pattern out starting on D as we did in the introduction to see the D Major scale as 3 and 4 whole tone clusters.
+      </p>
+      <Keys from={C0} to={C3} size="large" highlighterList={[
+        ...WholeToneLightBG,
+        DMaj
+      ]}></Keys>
+      <p>
+        It can take some practice to really see those clusters of 3 and 4 but if
+        you play with the slider above and slowly reveal the keys as you imagine
+        jumping back and forth between those two whole tone scales, I believe it
+        will start to come together.
+        <br/>
+        <br/>
+        Now Let's look at B Major. You can still see the clusters of 3 and 4
+        notes from each whole tone scale but the result of starting on B is that
+        there are a lot more black notes in the resulting scale.
+      </p>
+      <Keys from={C0} to={C3} size="large" highlighterList={[
+        ...WholeToneLightBG,
+        BMaj
+      ]}></Keys>
+    </>
+  );
+}
+
+
 function App() {
   return (
     <div className="App">
@@ -298,6 +430,8 @@ function App() {
         <h1>Whole Tone Scales to Major Modes</h1>
         <Introduction></Introduction>
         <TraditionalMethod></TraditionalMethod>
+        <WholeToneScales></WholeToneScales>
+        <MajorScalePattern></MajorScalePattern>
       </header>
     </div>
   );

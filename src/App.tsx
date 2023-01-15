@@ -1,8 +1,9 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useContext } from "react";
 import Slider from "@mui/material/Slider";
 import { ModeBuilder } from "./ModeHighlighters";
 import "./App.css";
 import { KeyHighlighter } from "./KeyHighlighter";
+import { SoundPlayer, SoundPlayerContext, SoundPlayerProvider } from "./SoundPlayer";
 
 type NaturalNote = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 type Accidental = "#" | "b" | undefined;
@@ -13,11 +14,12 @@ export type Note = {
   highlight?: string;
   bracket?: "left" | "middle" | "right" | "solo";
   bracketColor?:
-    "bracket-color-1"
+    | "bracket-color-1"
     | "bracket-color-2"
     | "bracket-color-1 lighten"
     | "bracket-color-2 lighten";
   bracketLabel?: string;
+  didSound?: boolean;
 };
 const CHROMA = "C_D_EF_G_A_B";
 
@@ -105,6 +107,7 @@ const Keys: FC<{
   const [progress, setProgress] = useState(0.0);
   const [drawnProgress, setDrawnProgress] = useState(-1.0);
   const [notes, setNotes] = useState<Note[] | null>(null);
+  const [didFadeIn, setDidFadeIn] = useState(false);
 
   // Animate in.
   useEffect(() => {
@@ -114,6 +117,7 @@ const Keys: FC<{
           const keyPerc = 1 / 37;
           if (p + keyPerc >= 1) {
             clearInterval(intervalId);
+            setDidFadeIn(true);
           }
           return p + 1 / 37;
         });
@@ -146,6 +150,9 @@ const Keys: FC<{
     for (const note of notes) {
       note.bracket = undefined;
       note.highlight = undefined;
+      if (!didFadeIn) {
+        note.didSound = true;
+      }
     }
     for (const highlighter of highlighterList) {
       highlighter.reset();
@@ -154,7 +161,13 @@ const Keys: FC<{
       progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
-        if (!highlighter.opts.shouldAnimate || index <= animUpTo) {
+        if (highlighter.opts.shouldAnimate) {
+          if (index <= animUpTo) {
+            highlighter?.accept(note);
+          } else {
+            note.didSound = false;
+          }
+        } else {
           highlighter?.accept(note);
         }
       });
@@ -164,7 +177,7 @@ const Keys: FC<{
     setNotes((previousNotes) => {
       return previousNotes;
     });
-  }, [notes, progress, drawnProgress, highlighterList]);
+  }, [notes, progress, didFadeIn, drawnProgress, highlighterList]);
 
   const onSliderChange = (
     e: Event,
@@ -225,8 +238,14 @@ const WholeToneLightBG: KeyHighlighter[] = [
 ];
 
 function Introduction() {
+  const player = useContext(SoundPlayerContext);
+
+  const playSound = () => {
+    player?.playChord();
+  };
+
   return (
-    <p>
+    <p onClick={playSound}>
       This is an interactive music theory tutorial that will introduce you to a
       non-standard method of learning all of the major scales as well as the
       major modes.
@@ -246,10 +265,12 @@ function Introduction() {
 }
 
 function TraditionalMethod() {
+  const player = useContext(SoundPlayerContext);
   const builder = new ModeBuilder(C0)
     .Ionian()
     .ColorSingleFirst()
     .BracketsWholeHalf()
+    .OnHighlight((note: Note) => playNote(player, note))
     .Animate();
   const CMaj: KeyHighlighter[] = [builder.build()];
   builder.Note(D0);
@@ -293,15 +314,24 @@ function TraditionalMethod() {
   );
 }
 
+const playNote = (player: SoundPlayer | null, note: Note) => {
+  if (!note.didSound) {
+    player?.playNote(note);
+    note.didSound = true;
+  }
+}
+
 function WholeToneScales() {
+  const player = useContext(SoundPlayerContext);
   const builder = new ModeBuilder(C0)
     .WholeTone()
     .ColorSingleFirst()
     .BracketsScaleNumbers()
+    .OnHighlight((note: Note) => playNote(player, note))
     .Animate();
   const CWhole: KeyHighlighter[] = [builder.build()];
-  builder.Note(CS0);
-  builder.ColorSingleSecond()
+  builder.Note(CS0)
+    .ColorSingleSecond();
   const CSWhole: KeyHighlighter[] = [builder.build()];
   const WholeZipped: KeyHighlighter[] = [
     new ModeBuilder(C0).WholeTone().build(),
@@ -327,18 +357,20 @@ function WholeToneScales() {
       </p>
       <Keys from={C0} to={C3} size="large" highlighterList={CWhole}></Keys>
       <p>
-        If we apply that same pattern but start on the next key up from
-        'C' which is 'C#' we get this pattern for the C-sharp whole-tone scale:
+        If we apply that same pattern but start on the next key up from 'C'
+        which is 'C#' we get this pattern for the C-sharp whole-tone scale:
       </p>
       <Keys from={C0} to={C3} size="large" highlighterList={CSWhole}></Keys>
       <p>
-        Notice how these two scales look quite similar but are somewhat like mirror images of one another.
-        Another interesting thing to notice is how the white keys that surround
-        a cluster of black keys belong to the whole-tone scale of the
+        Notice how these two scales look quite similar but are somewhat like
+        mirror images of one another. Another interesting thing to notice is how
+        the white keys that surround a cluster of black keys belong to the
+        whole-tone scale of the
         <strong> other</strong> cluster of black keys. For example: C, D and E
         surround the cluster of two black keys (C# and D#) but they are in the
         same whole tone scale as the three black key cluster (F#, G# and A#).
-        <br/><br/>
+        <br />
+        <br />
         Going forward its going to be very useful to start thinking of these two
         scales in a visual way and starting to become familiar with their shapes
         and the relationship between which black keys and white keys belong to
@@ -358,10 +390,12 @@ function WholeToneScales() {
 }
 
 function MajorScalePattern() {
+  const player = useContext(SoundPlayerContext);
   const builder = new ModeBuilder(C0)
     .Ionian()
     .ColorDual()
     .BracketsRunNumbers()
+    .OnHighlight((note: Note) => playNote(player, note))
     .Animate();
   const CMaj = builder.build();
   builder.Note(D0);
@@ -374,65 +408,74 @@ function MajorScalePattern() {
       <h3>Major Scales</h3>
       <p>
         Now that we're familiar with the whole tone scales. Let's look at the C
-        major scale again (the scale that is  all the white keys from C up to
-        the next octave). This time instead of counting (w, w, h, w, w, w, h)
-        let's just see where the notes of C major land on our established
-        whole-tone scales.
+        major scale again (the scale that is all the white keys from C up to the
+        next octave). This time instead of counting (w, w, h, w, w, w, h) let's
+        just see where the notes of C major land on our established whole-tone
+        scales.
         <br />
         <br />
         If we highlight the keyboard with the whole-tone scale on the keyboard
         and then look at the C major scale we'll notice a pattern:
       </p>
-      <Keys from={C0} to={C3} size="large" highlighterList={[
-        ...WholeToneLightBG,
-        CMaj
-      ]}></Keys>
+      <Keys
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={[...WholeToneLightBG, CMaj]}
+      ></Keys>
       <p>
-        As you can see above the C major scale is a pattern of 3 whole-tones from one scale, and then 4 from the other.
-        <br/>
+        As you can see above the C major scale is a pattern of 3 whole-tones
+        from one scale, and then 4 from the other.
+        <br />
         I hope you'll agree that this much easier to rember than the traditional
         (w, w, h, w, w, w, h) formula, and maybe more importantly, you can just
         see the shape of the scale by really paying attention to that cluster of
         3 next to a cluster of 4.
-        <br/>
-        <br/>
-        Let's try this pattern out starting on D as we did in the introduction to see the D Major scale as 3 and 4 whole tone clusters.
+        <br />
+        <br />
+        Let's try this pattern out starting on D as we did in the introduction
+        to see the D Major scale as 3 and 4 whole tone clusters.
       </p>
-      <Keys from={C0} to={C3} size="large" highlighterList={[
-        ...WholeToneLightBG,
-        DMaj
-      ]}></Keys>
+      <Keys
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={[...WholeToneLightBG, DMaj]}
+      ></Keys>
       <p>
         It can take some practice to really see those clusters of 3 and 4 but if
         you play with the slider above and slowly reveal the keys as you imagine
         jumping back and forth between those two whole tone scales, I believe it
         will start to come together.
-        <br/>
-        <br/>
+        <br />
+        <br />
         Now Let's look at B Major. You can still see the clusters of 3 and 4
         notes from each whole tone scale but the result of starting on B is that
         there are a lot more black notes in the resulting scale.
       </p>
-      <Keys from={C0} to={C3} size="large" highlighterList={[
-        ...WholeToneLightBG,
-        BMaj
-      ]}></Keys>
+      <Keys
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={[...WholeToneLightBG, BMaj]}
+      ></Keys>
     </>
   );
 }
 
-
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        <h1>Whole Tone Scales to Major Modes</h1>
-        <Introduction></Introduction>
-        <TraditionalMethod></TraditionalMethod>
-        <WholeToneScales></WholeToneScales>
-        <MajorScalePattern></MajorScalePattern>
-      </header>
+      <SoundPlayerProvider>
+        <header className="App-header">
+          {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          <h1>Whole Tone Scales to Major Modes</h1>
+          <Introduction></Introduction>
+          <TraditionalMethod></TraditionalMethod>
+          <WholeToneScales></WholeToneScales>
+          <MajorScalePattern></MajorScalePattern>
+        </header>
+      </SoundPlayerProvider>
     </div>
   );
 }

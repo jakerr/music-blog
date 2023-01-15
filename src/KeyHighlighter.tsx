@@ -1,6 +1,7 @@
 import { Note, noteIndex } from './App';
 
-type HighlighterColor = "color-1" | "color-2"
+type HighlighterColor = "color-1" | "color-2" | "color-1 lighten" | "color-2 lighten";
+type BracketStyle = "none" | "scale-num" | "run-num" | "whole-half";
 
 type KeyHighlighterOptions = {
   startNote: Note,
@@ -8,7 +9,57 @@ type KeyHighlighterOptions = {
   oddColor: HighlighterColor,
   evenColor: HighlighterColor,
   shouldAnimate: boolean,
-  bracketStyle: "none" | "scale-num" | "run-num" | "whole-half",
+  bracketStyle: BracketStyle,
+}
+
+export class KeyHighlighterOptionsBuilder {
+  private _startNote: Note = {name: "C", oct: 0};
+  private _pattern: number[] = [3, 4];
+  private _oddColor: HighlighterColor = "color-1";
+  private _evenColor: HighlighterColor = "color-2";
+  private _shouldAnimate: boolean = false;
+  private _bracketStyle: BracketStyle = "none";
+
+  startNote(startNote: Note) {
+    this._startNote = startNote;
+    return this;
+  }
+
+  pattern(pattern: number[]) {
+    this._pattern = pattern;
+    return this;
+  }
+
+  oddColor(oddColor: HighlighterColor) {
+    this._oddColor = oddColor;
+    return this;
+  }
+
+  evenColor(evenColor: HighlighterColor) {
+    this._evenColor = evenColor;
+    return this;
+  }
+
+  shouldAnimate(shouldAnimate: boolean) {
+    this._shouldAnimate = shouldAnimate;
+    return this;
+  }
+
+  bracketStyle(bracketStyle: "none" | "scale-num" | "run-num" | "whole-half") {
+    this._bracketStyle = bracketStyle;
+    return this;
+  }
+
+  build(): KeyHighlighterOptions {
+    return {
+      startNote: this._startNote,
+      pattern: this._pattern,
+      oddColor: this._oddColor,
+      evenColor: this._evenColor,
+      shouldAnimate: this._shouldAnimate,
+      bracketStyle: this._bracketStyle
+    };
+  }
 }
 
 
@@ -37,12 +88,7 @@ export class KeyHighlighter {
   }
 
   startRun(note: Note) {
-    let bracketPos: "left" | "middle" | "right" = "left";
-    if (this.opts.bracketStyle === "whole-half") {
-      if (this.scaleNumber > 1) {
-        bracketPos = "middle";
-      }
-    }
+    let bracketPos: "middle" | "left" = this.scaleNumber > 1 ? "middle" : "left";
     this.addBracket(note, bracketPos);
     this.halfSteps = 0;
     this.runTarget = this.opts.pattern[this.patternIndex];
@@ -82,12 +128,7 @@ export class KeyHighlighter {
   }
 
   endRun(note: Note) {
-    let bracketPos: "left" | "middle" | "right" = "right";
-    if (this.opts.bracketStyle === "whole-half") {
-      if (this.scaleNumber > 1 && this.scaleNumber < 7) {
-        bracketPos = "middle";
-      }
-    }
+    let bracketPos: "middle" | "right" = (this.scaleNumber > 1 && this.scaleNumber < 7) ? "middle" : "right";
     this.addBracket(note, bracketPos);
     this.parity = this.parity === "odd" ? "even" : "odd";
     if (this.patternIndex >= this.opts.pattern.length) {

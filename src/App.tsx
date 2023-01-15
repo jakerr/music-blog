@@ -1,8 +1,7 @@
-import React, {FC, useEffect, useInsertionEffect, useLayoutEffect, useState} from 'react';
-import logo from './logo.svg';
+import React, {FC, useEffect, useState} from 'react';
 import Slider from '@mui/material/Slider';
+import { ModeBuilder } from './ModeHighlighters';
 import './App.css';
-import { threadId } from 'worker_threads';
 import { KeyHighlighter } from './KeyHighlighter';
 
 type NaturalNote = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
@@ -13,15 +12,15 @@ export type Note = {
   oct: number,
   highlight?: string,
   bracket?: "left" | "middle" | "right" | "solo",
-  bracketColor?: "bracket-color-1" | "bracket-color-2",
+  bracketColor?: "bracket-color-1" | "bracket-color-2" | "bracket-color-1 lighten" | "bracket-color-2 lighten",
   bracketLabel?: string,
 }
 const CHROMA = "C_D_EF_G_A_B";
 
 const accidentalOffset = (acc: Accidental): number => {
-  if (acc == "#") {
+  if (acc === "#") {
     return 1;
-  } else if (acc == "b") {
+  } else if (acc === "b") {
     return -1;
   }
   return 0;
@@ -53,8 +52,6 @@ const noteColor = (note: Note): string => {
   const offset = accidentalOffset(note.acc);
   return offset === 0 ? "white" : "black";
 }
-
-type KeyBrackey = "left" | "middle" | "right"
 
 function bracketClass(bracket?: "left" | "middle" | "right" | "solo") {
   let classString: string;
@@ -132,14 +129,17 @@ const Keys: FC<{
 
   // Effect to update highlighting
   useEffect(() => {
-    console.log(`Notes in use effect: ${notes ? notes.length : "no notes"}`)
     if (!notes) {
-      console.log("Skip we don't have notes yet.");
+      // console.log("Skip we don't have notes yet.");
       return;
     }
     if (drawnProgress === progress) {
-      console.log("Skip draw as we already drew at this progress.");
+      // console.log("Skip draw as we already drew at this progress.");
       return;
+    }
+    for (const note of notes) {
+      note.bracket = undefined;
+      note.highlight = undefined;
     }
     for (const highlighter of highlighterList) {
       highlighter.reset();
@@ -147,8 +147,6 @@ const Keys: FC<{
     const animUpTo = progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
-        note.bracket = undefined;
-        note.highlight = undefined;
         if (!highlighter.opts.shouldAnimate || index <= animUpTo) {
           highlighter?.accept(note);
         }
@@ -206,34 +204,16 @@ function App() {
     oct: 3,
   }
   const sharp: Note = {...C0, acc:"#"}
-  const aSharp: Note = {...C0, name: "C", acc:"#"}
   const highlighterList: KeyHighlighter[] = [
-    // new KeyHighlighter({
-    //     startNote: from,
-    //     pattern: [6],
-    //     oddColor: "tone-color-1 lighten",
-    //     evenColor: "tone-color-2 lighten",
-    //     shouldAnimate: false,
-    //     bracketStyle : "none" 
-    // }),
-    // new KeyHighlighter({
-    //     startNote: sharp,
-    //     pattern: [6],
-    //     oddColor: "tone-color-1 lighten",
-    //     evenColor: "tone-color-2 lighten",
-    //     shouldAnimate: false,
-    //     bracketStyle : "none" 
-    // }),
-    new KeyHighlighter({
-        startNote: sharp,
-        pattern: [3,4],
-        oddColor: "color-1",
-        evenColor: "color-1",
-        shouldAnimate: true,
-        bracketStyle : "whole-half" 
-    })
+    new ModeBuilder(C0)
+        .WholeTone()
+        .ColorDualLight()
+        .build(),
+    new ModeBuilder(sharp)
+        .WholeTone()
+        .ColorDualLight()
+        .build()
   ];
-
   return (
     <div className="App">
       <header className="App-header">

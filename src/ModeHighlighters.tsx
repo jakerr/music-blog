@@ -30,6 +30,11 @@ export class ModeBuilder {
     this._opts.startNote(startNote);
   }
 
+  Note(note: Note) {
+    this._opts.startNote(note);
+    return this;
+  }
+
   WholeTone() {
     this._opts.pattern([6]);
     return this;

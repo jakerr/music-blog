@@ -41,9 +41,9 @@
   border-radius: 0px 0px var(--kb-key-rad) var(--kb-key-rad);
   cursor: pointer;
   box-shadow: 0px 5px 1px rgba(32, 32, 32, 0.2);
-  -webkit-transition: margin 0.05s ease, background-color 0.07s ease,
+  -webkit-transition: background-color 0.07s ease,
     box-shadow 0.05s ease;
-  transition: margin 0.05s ease, background-color 0.07s ease,
+  transition: background-color 0.07s ease,
     box-shadow 0.05s ease;
 }
 

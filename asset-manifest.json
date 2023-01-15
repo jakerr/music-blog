@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.4d6c1bdd.css",
-    "main.js": "/static/js/main.8f4a801c.js",
-    "static/js/787.ec18090e.chunk.js": "/static/js/787.ec18090e.chunk.js",
-    "index.html": "/index.html",
-    "main.4d6c1bdd.css.map": "/static/css/main.4d6c1bdd.css.map",
-    "main.8f4a801c.js.map": "/static/js/main.8f4a801c.js.map",
-    "787.ec18090e.chunk.js.map": "/static/js/787.ec18090e.chunk.js.map"
+    "main.css": "https://github.com/jakerr/music-blog/static/css/main.4d6c1bdd.css",
+    "main.js": "https://github.com/jakerr/music-blog/static/js/main.32b91fe7.js",
+    "static/js/787.ec18090e.chunk.js": "https://github.com/jakerr/music-blog/static/js/787.ec18090e.chunk.js",
+    "index.html": "https://github.com/jakerr/music-blog/index.html",
+    "main.4d6c1bdd.css.map": "https://github.com/jakerr/music-blog/static/css/main.4d6c1bdd.css.map",
+    "main.32b91fe7.js.map": "https://github.com/jakerr/music-blog/static/js/main.32b91fe7.js.map",
+    "787.ec18090e.chunk.js.map": "https://github.com/jakerr/music-blog/static/js/787.ec18090e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4d6c1bdd.css",
-    "static/js/main.8f4a801c.js"
+    "static/js/main.32b91fe7.js"
   ]
 }

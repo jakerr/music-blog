@@ -239,7 +239,7 @@ function Introduction() {
       <br /> What are these two kinds of notes? Well in interest of not burying
       the lede I'm talking about the two whole tone scales and looking at the
       construction of the major scales and modes as clusters of notes from those
-      to scales in alternate. If that isn't too clear, don't worry it's all
+      two scales in alternate. If that isn't too clear, don't worry it's all
       layed out in detail below!
     </p>
   );

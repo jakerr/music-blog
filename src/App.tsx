@@ -335,9 +335,9 @@ function WholeToneScales() {
         Notice how these two scales look quite similar but are somewhat like mirror images of one another.
         Another interesting thing to notice is how the white keys that surround
         a cluster of black keys belong to the whole-tone scale of the
-        <strong>other</strong> cluster of black keys. For example, C, D, E
+        <strong> other</strong> cluster of black keys. For example: C, D and E
         surround the cluster of two black keys (C# and D#) but they are in the
-        same whole tone scale as the three black key cluster (F#, G#, A#).
+        same whole tone scale as the three black key cluster (F#, G# and A#).
         <br/><br/>
         Going forward its going to be very useful to start thinking of these two
         scales in a visual way and starting to become familiar with their shapes
@@ -370,8 +370,8 @@ function MajorScalePattern() {
   const BMaj = builder.build();
   return (
     <>
-      <h2>Major Scales</h2>
-      <h3>The Whole-Tone Cluster Method</h3>
+      <h2>The Whole-Tone Cluster Method</h2>
+      <h3>Major Scales</h3>
       <p>
         Now that we're familiar with the whole tone scales. Let's look at the C
         major scale again (the scale that is  all the white keys from C up to

@@ -22,6 +22,7 @@ export const Keyboard: FC<{
   const [lastTopNote, setLastTopNote] = useState(-1);
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [didFadeIn, setDidFadeIn] = useState(false);
+  const [currentHighlighters, setHighlighters] = useState(highlighterList);
 
   // Animate in.
   useEffect(() => {
@@ -65,12 +66,13 @@ export const Keyboard: FC<{
     setLastTopNote(topNoteIndex);
     for (const note of notes) {
       note.bracket = undefined;
+      note.bracketLabel = undefined;
       note.highlight = undefined;
     }
-    for (const highlighter of highlighterList) {
+    for (const highlighter of currentHighlighters) {
       highlighter.reset();
     }
-    for (const highlighter of highlighterList) {
+    for (const highlighter of currentHighlighters) {
       notes.forEach((note, index) => {
         if (highlighter.opts.shouldAnimate) {
           if (index <= topNoteIndex) {
@@ -89,7 +91,26 @@ export const Keyboard: FC<{
     setNotes((previousNotes) => {
       return previousNotes;
     });
-  }, [notes, progress, didFadeIn, lastTopNote, highlighterList, player]);
+  }, [notes, progress, didFadeIn, lastTopNote, currentHighlighters, player]);
+
+  const onChangeStartNote = (
+    e: Event,
+    value: number | number[],
+    activeThumb: number
+  ) => {
+    if (notes === null) return;
+    const singleValue = Array.isArray(value) ? value[0] : value;
+    const kbFirstKey = noteIndex(from);
+    const newStartIndex = kbFirstKey + singleValue;
+    const newStartNote = noteForIndex(newStartIndex);
+    const hl = highlighterList[highlighterList.length - 1];
+    hl.opts.startNote = newStartNote;
+    // Force render of notes since we changed the contents of highlighter.
+    for (const note of notes) {
+      note.playable = false;
+    }
+    setLastTopNote(-1);
+  }
 
   const onSliderChange = (
     e: Event,
@@ -118,6 +139,21 @@ export const Keyboard: FC<{
         defaultValue={0}
         valueLabelDisplay="off"
         onChange={onSliderChange} />
+      </div>
+      <div className="kb-scrubber">
+      <Slider
+        color="secondary"
+        size="small"
+        defaultValue={noteIndex(from)}
+        min={0}
+        max={11}
+        valueLabelFormat={(value, index) => {
+          const note = noteForIndex(value);
+          const name = `${note.name}${note.acc ?? ""}`
+          return name;
+        }}
+        valueLabelDisplay="on"
+        onChange={onChangeStartNote} />
       </div>
       </div>
     </>

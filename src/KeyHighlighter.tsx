@@ -1,4 +1,4 @@
-import { Note, noteIndex } from './App';
+import { Note, noteIndex } from "./Notes";
 
 type HighlighterColor = "color-1" | "color-2" | "color-1 lighten" | "color-2 lighten";
 type BracketStyle = "none" | "scale-num" | "run-num" | "whole-half";

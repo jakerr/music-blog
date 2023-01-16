@@ -1,4 +1,4 @@
-import { Note } from "./App";
+import { Note } from "./Notes";
 import { KeyHighlighter, KeyHighlighterOptionsBuilder } from "./KeyHighlighter";
 
 type MajorMode = "Ionian" | "Dorian" | "Phrygian" | "Lydian" | "Mixolydian" | "Aeolian" | "Locrian";

@@ -1,6 +1,6 @@
 import {createContext, useRef, useEffect, useState, PropsWithChildren} from 'react'
 import MIDISounds from 'midi-sounds-react'
-import { Note, noteIndex } from './App';
+import { Note, noteIndex } from "./Notes";
 
 export const SoundPlayerContext = createContext<SoundPlayer | null>(null);
 

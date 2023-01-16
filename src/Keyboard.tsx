@@ -104,24 +104,22 @@ export const Keyboard: FC<{
   const sizeClass = size === "large" ? "kb-80vw" : size === "medium" ? "kb-50vw" : "kb-20vw";
   return (
     <>
+      <div className={`keyboard-wrapper ${sizeClass}`}>
       <div className={`keyboard ${sizeClass}`}>
         {notes?.map((note) => {
           return <Key key={noteIndex(note)} note={note}></Key>;
         })}
       </div>
+      <div className="kb-scrubber">
       <Slider
         value={Math.floor(progress * 100.0)}
+        color="secondary"
         size="small"
         defaultValue={0}
-        aria-label="Small"
-        valueLabelDisplay="auto"
+        valueLabelDisplay="off"
         onChange={onSliderChange} />
-
-      {/* Notes from: {from.name}{from.acc}{from.oct} to: {to.name}{to.acc}{to.oct}
-            ({fromIndex}) ~ ({toIndex})
-            <br>
-            </br>
-            Notes round trip from: {fromNote2.name}{fromNote2.acc}{fromNote2.oct} to: {toNote2.name}{toNote2.acc}{toNote2.oct} */}
+      </div>
+      </div>
     </>
   );
 };

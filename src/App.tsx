@@ -19,7 +19,7 @@ export type Note = {
     | "bracket-color-1 lighten"
     | "bracket-color-2 lighten";
   bracketLabel?: string;
-  didSound?: boolean;
+  playable?: boolean;
 };
 const CHROMA = "C_D_EF_G_A_B";
 
@@ -104,8 +104,9 @@ const Keys: FC<{
   size?: "small" | "medium" | "large";
   highlighterList: KeyHighlighter[];
 }> = ({ from, to, size = "large", highlighterList = [] }) => {
+  const player = useContext(SoundPlayerContext);
   const [progress, setProgress] = useState(0.0);
-  const [drawnProgress, setDrawnProgress] = useState(-1.0);
+  const [lastTopNote, setLastTopNote] = useState(-1);
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [didFadeIn, setDidFadeIn] = useState(false);
 
@@ -143,41 +144,39 @@ const Keys: FC<{
       // console.log("Skip we don't have notes yet.");
       return;
     }
-    if (drawnProgress === progress) {
+    const topNote =
+      progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
+    if (lastTopNote === topNote) {
       // console.log("Skip draw as we already drew at this progress.");
       return;
     }
+    setLastTopNote(topNote);
     for (const note of notes) {
       note.bracket = undefined;
       note.highlight = undefined;
-      if (!didFadeIn) {
-        note.didSound = true;
-      }
     }
     for (const highlighter of highlighterList) {
       highlighter.reset();
     }
-    const animUpTo =
-      progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
+        if (topNote === index && note.playable) {
+          playNote(player, note);
+        }
         if (highlighter.opts.shouldAnimate) {
-          if (index <= animUpTo) {
+          if (index <= topNote) {
             highlighter?.accept(note);
-          } else {
-            note.didSound = false;
           }
         } else {
           highlighter?.accept(note);
         }
       });
     }
-    setDrawnProgress(progress);
     // Force render of notes since we changed the contents via highlighter.
     setNotes((previousNotes) => {
       return previousNotes;
     });
-  }, [notes, progress, didFadeIn, drawnProgress, highlighterList]);
+  }, [notes, progress, didFadeIn, lastTopNote, highlighterList, player]);
 
   const onSliderChange = (
     e: Event,
@@ -199,6 +198,7 @@ const Keys: FC<{
         })}
       </div>
       <Slider
+        value={Math.floor(progress * 100.0)}
         size="small"
         defaultValue={0}
         aria-label="Small"
@@ -259,12 +259,10 @@ function Introduction() {
 }
 
 function TraditionalMethod() {
-  const player = useContext(SoundPlayerContext);
   const builder = new ModeBuilder(C0)
     .Ionian()
     .ColorSingleFirst()
     .BracketsWholeHalf()
-    .OnHighlight((note: Note) => playNote(player, note))
     .Animate();
   const CMaj: KeyHighlighter[] = [builder.build()];
   builder.Note(D0);
@@ -309,19 +307,16 @@ function TraditionalMethod() {
 }
 
 const playNote = (player: SoundPlayer | null, note: Note) => {
-  if (!note.didSound) {
+  if (note.playable) {
     player?.playNote(note, 16);
-    note.didSound = true;
   }
 }
 
 function WholeToneScales() {
-  const player = useContext(SoundPlayerContext);
   const builder = new ModeBuilder(C0)
     .WholeTone()
     .ColorSingleFirst()
     .BracketsScaleNumbers()
-    .OnHighlight((note: Note) => playNote(player, note))
     .Animate();
   const CWhole: KeyHighlighter[] = [builder.build()];
   builder.Note(CS0)
@@ -384,12 +379,10 @@ function WholeToneScales() {
 }
 
 function MajorScalePattern() {
-  const player = useContext(SoundPlayerContext);
   const builder = new ModeBuilder(C0)
     .Ionian()
     .ColorDual()
     .BracketsRunNumbers()
-    .OnHighlight((note: Note) => playNote(player, note))
     .Animate();
   const CMaj = builder.build();
   builder.Note(D0);

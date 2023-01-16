@@ -10,7 +10,6 @@ type KeyHighlighterOptions = {
   evenColor: HighlighterColor,
   shouldAnimate: boolean,
   bracketStyle: BracketStyle,
-  onHighlight?: (note: Note) => void
 }
 
 export class KeyHighlighterOptionsBuilder {
@@ -20,7 +19,6 @@ export class KeyHighlighterOptionsBuilder {
   private _evenColor: HighlighterColor = "color-2";
   private _shouldAnimate: boolean = false;
   private _bracketStyle: BracketStyle = "none";
-  private _onHighlight?: (note: Note) => void = undefined;
 
   startNote(startNote: Note) {
     this._startNote = startNote;
@@ -52,11 +50,6 @@ export class KeyHighlighterOptionsBuilder {
     return this;
   }
 
-  onHighlight(fn: (note: Note) => void) {
-    this._onHighlight = fn;
-    return this;
-  }
-
   build(): KeyHighlighterOptions {
     return {
       startNote: this._startNote,
@@ -65,7 +58,6 @@ export class KeyHighlighterOptionsBuilder {
       evenColor: this._evenColor,
       shouldAnimate: this._shouldAnimate,
       bracketStyle: this._bracketStyle,
-      onHighlight: this._onHighlight
     };
   }
 }
@@ -151,8 +143,8 @@ export class KeyHighlighter {
     const color = this.parity === "odd" ? `tone-${this.opts.oddColor}` : `tone-${this.opts.evenColor}`;
     this.currentRun += 1;
     this.scaleNumber += 1;
-    if (note.highlight !== color) {
-      this.opts.onHighlight?.(note);
+    if (this.opts.shouldAnimate) {
+      note.playable = true;
     }
     note.highlight = color;
     this.addBracketLabel(note);

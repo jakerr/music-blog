@@ -124,11 +124,6 @@ export class ModeBuilder {
     return this;
   }
 
-  OnHighlight(fn: (note: Note) => void) {
-    this._opts.onHighlight(fn);
-    return this;
-  }
-
   build(): KeyHighlighter {
     return new KeyHighlighter(this._opts.build());
   }

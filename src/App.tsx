@@ -144,13 +144,13 @@ const Keys: FC<{
       // console.log("Skip we don't have notes yet.");
       return;
     }
-    const topNote =
+    const topNoteIndex =
       progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
-    if (lastTopNote === topNote) {
+    if (lastTopNote === topNoteIndex) {
       // console.log("Skip draw as we already drew at this progress.");
       return;
     }
-    setLastTopNote(topNote);
+    setLastTopNote(topNoteIndex);
     for (const note of notes) {
       note.bracket = undefined;
       note.highlight = undefined;
@@ -160,17 +160,18 @@ const Keys: FC<{
     }
     for (const highlighter of highlighterList) {
       notes.forEach((note, index) => {
-        if (topNote === index && note.playable) {
-          playNote(player, note);
-        }
         if (highlighter.opts.shouldAnimate) {
-          if (index <= topNote) {
+          if (index <= topNoteIndex) {
             highlighter?.accept(note);
           }
         } else {
           highlighter?.accept(note);
         }
       });
+    }
+    const topNote = notes[topNoteIndex];
+    if (didFadeIn && topNote && topNote.playable) {
+      playNote(player, topNote);
     }
     // Force render of notes since we changed the contents via highlighter.
     setNotes((previousNotes) => {

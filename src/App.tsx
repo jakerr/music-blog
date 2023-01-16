@@ -238,14 +238,8 @@ const WholeToneLightBG: KeyHighlighter[] = [
 ];
 
 function Introduction() {
-  const player = useContext(SoundPlayerContext);
-
-  const playSound = () => {
-    player?.playChord();
-  };
-
   return (
-    <p onClick={playSound}>
+    <p>
       This is an interactive music theory tutorial that will introduce you to a
       non-standard method of learning all of the major scales as well as the
       major modes.
@@ -316,7 +310,7 @@ function TraditionalMethod() {
 
 const playNote = (player: SoundPlayer | null, note: Note) => {
   if (!note.didSound) {
-    player?.playNote(note);
+    player?.playNote(note, 16);
     note.didSound = true;
   }
 }

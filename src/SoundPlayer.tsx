@@ -4,20 +4,29 @@ import { Note, noteIndex } from './App';
 
 export const SoundPlayerContext = createContext<SoundPlayer | null>(null);
 
+type NoteLength = 1 | 2 | 4 | 8 | 16 | 32;
+
 export class SoundPlayer {
   private _midiSounds: MIDISounds;
+  private _beatLength: number;
+  private _nextNoteTime: number;
 
-  constructor(midiSounds: MIDISounds) {
+  constructor(midiSounds: MIDISounds, bpm: number) {
     this._midiSounds = midiSounds;
+    this._beatLength = 4 * 60 / bpm;
+    this._nextNoteTime = 0;
   }
 
-  playChord() {
-    this._midiSounds.playChordNow(43, [60], 2.5);
+  playChord(notes: Note[], length: NoteLength) {
+    const noteStart = Math.max(this._nextNoteTime, this._midiSounds.contextTime());
+    const noteLen = this._beatLength / length;
+    const tones = notes.map(n => noteIndex(n) + 12 * 4);
+    this._midiSounds.playChordAt(noteStart, 4, tones, noteLen);
+    this._nextNoteTime = noteStart + noteLen;
   }
 
-  playNote(note: Note) {
-    const noteId = noteIndex(note) + (12 * 4);
-    this._midiSounds.playChordNow(43, [noteId], 0.2);
+  playNote(note: Note, length: NoteLength) {
+    this.playChord([note], length);
   }
 }
 
@@ -30,7 +39,7 @@ export const SoundPlayerProvider: React.FC<PropsWithChildren> = ({children}) => 
   const midiSoundsRef = useRef<MIDISounds>(null);
   useEffect(() => {
     if (!midiSoundsRef.current) return;
-    setPlayer(new SoundPlayer(midiSoundsRef.current));
+    setPlayer(new SoundPlayer(midiSoundsRef.current, 120));
   }, [midiSoundsRef]);
 
 
@@ -40,7 +49,7 @@ export const SoundPlayerProvider: React.FC<PropsWithChildren> = ({children}) => 
       <MIDISounds
         ref={midiSoundsRef} 
         appElementName="root"
-        instruments={[43]}></MIDISounds>
+        instruments={[4]}></MIDISounds>
     </SoundPlayerContext.Provider> 
   );
 }

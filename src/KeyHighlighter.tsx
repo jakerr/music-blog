@@ -90,7 +90,8 @@ export class KeyHighlighter {
   }
 
   startRun(note: Note) {
-    let bracketPos: "middle" | "left" = this.scaleNumber > 1 ? "middle" : "left";
+    let bracketPos: "middle" | "left" =
+      (this.patternIndex > 0 || this.scaleNumber > 1) ? "middle" : "left";
     this.addBracket(note, bracketPos);
     this.halfSteps = 0;
     this.runTarget = this.opts.pattern[this.patternIndex];
@@ -130,7 +131,9 @@ export class KeyHighlighter {
   }
 
   endRun(note: Note) {
-    let bracketPos: "middle" | "right" = (this.scaleNumber > 1 && this.scaleNumber < 7) ? "middle" : "right";
+    let bracketPos: "left" | "middle" | "right" = 
+    this.scaleNumber === 1 ? "left" :
+    ((this.scaleNumber > 1 && this.scaleNumber < 7) ? "middle" : "right");
     this.addBracket(note, bracketPos);
     this.parity = this.parity === "odd" ? "even" : "odd";
     if (this.patternIndex >= this.opts.pattern.length) {

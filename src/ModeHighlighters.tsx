@@ -1,12 +1,12 @@
 import { Note } from "./Notes";
 import { KeyHighlighter, KeyHighlighterOptionsBuilder } from "./KeyHighlighter";
 
-type MajorMode = "Ionian" | "Dorian" | "Phrygian" | "Lydian" | "Mixolydian" | "Aeolian" | "Locrian";
+export type MajorMode = "Ionian" | "Dorian" | "Phrygian" | "Lydian" | "Mixolydian" | "Aeolian" | "Locrian";
 type MajorModeMap = {
   [key in MajorMode]: number[];
 };
 
-const MajorModes: MajorModeMap = {
+export const MajorModes: MajorModeMap = {
   Ionian: [3, 4],
   Dorian: [2, 4, 1],
   Phrygian: [1, 4, 2],
@@ -42,6 +42,11 @@ export class ModeBuilder {
 
   WholeTone() {
     this._opts.pattern([6]);
+    return this;
+  }
+
+  ModeNamed(name: MajorMode) {
+    this._opts.mode(name);
     return this;
   }
 

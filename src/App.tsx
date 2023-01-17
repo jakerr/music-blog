@@ -1,28 +1,16 @@
-import { ModeBuilder } from "./ModeHighlighters";
+import { MajorMode, MajorModes, ModeBuilder } from "./ModeHighlighters";
 import "./App.css";
 import { KeyHighlighter } from "./KeyHighlighter";
 import { SoundPlayerProvider } from "./SoundPlayer";
 import { Keyboard } from "./Keyboard";
-import { Note } from "./Notes";
 import { GlobalOptionsProvider } from "./GlobalOptions";
+import { noteNamed } from "./Notes";
+// import { C0, D0, C3, CS0 } from "./NoteMacros";
 
-const C0: Note = {
-  name: "C",
-  oct: 0,
-};
-const B0: Note = {
-  name: "B",
-  oct: 0,
-};
-const D0: Note = {
-  name: "D",
-  oct: 0,
-};
-const C3: Note = {
-  name: "C",
-  oct: 3,
-};
-const CS0: Note = { ...C0, acc: "#" };
+const C0 = noteNamed("C0");
+const CS0 = noteNamed("C#0");
+const D0 = noteNamed("D0");
+const C3 = noteNamed("C3");
 
 const WholeToneLightBG: KeyHighlighter[] = [
   new ModeBuilder(C0).AlternatingWholeTones().ColorDualLight().build(),
@@ -211,7 +199,6 @@ function MajorScalePattern() {
   const CSMaj = builder.build();
   return (
     <>
-      <h2>The Whole-Tone Cluster Method</h2>
       <h3>Major Scales</h3>
       <p>
         Now that we're familiar with the whole tone scales. Let's look at the C
@@ -273,6 +260,75 @@ function MajorScalePattern() {
   );
 }
 
+function MinorScalePattern() {
+  const builder = new ModeBuilder(noteNamed("A0"))
+    .Aeolean()
+    .ColorDual()
+    .BracketsRunNumbers()
+    .Animate();
+  const AMin = builder.build();
+  return (
+    <>
+      <h3>Minor Scales</h3>
+      <p>
+        Another scale you may have heard of is the minor scale.  This is the
+        scale that you get when you start on A and use every white key up to the
+        next A.
+        <br/>
+        <br/>
+        Notice that when we start on A the whole-tones have a differnt pattern,
+        now it's [2, 3, 2].  Starting on A, the minor scale has all white keys,
+        but lets see what happens when you move this 2, 3, 2 pattern down to C
+        (use the slider to explore).
+      </p>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={[...WholeToneLightBG, AMin]}
+        canTranspose={true}
+      ></Keyboard>
+    </>
+  );
+}
+
+const GenericModePattern: React.FC<{
+  modeName: MajorMode,
+  noteName: string
+}> = ({modeName, noteName}) => {
+  const builder = new ModeBuilder(noteNamed(`${noteName}0`))
+    .ModeNamed(modeName)
+    .ColorDual()
+    .BracketsRunNumbers()
+    .Animate();
+  const modeHl = builder.build();
+  const pattern = MajorModes[modeName];
+  const patternString = pattern.join(', ');
+  return (
+    <>
+      <h3>{modeName} Mode</h3>
+      <p>
+        {modeName} is the mode that you get when you start on {noteName} and use every white
+        key up to the next {noteName}.
+        <br/>
+        <br/>
+        Notice that when we start on {noteName} the whole-tones have a differnt pattern
+        from our other modes thus far.
+        The {modeName} pattern is [{patternString}]. Starting on {noteName}, the {modeName} mode has all white keys,
+        but lets see what happens when you move this {patternString} pattern down to C
+        (use the slider to explore).
+      </p>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={[...WholeToneLightBG, modeHl]}
+        canTranspose={true}
+      ></Keyboard>
+    </>
+  );
+}
+
 function App() {
   return (
     <div className="App">
@@ -281,10 +337,48 @@ function App() {
           <header className="App-header">
             {/* <img src={logo} className="App-logo" alt="logo" /> */}
             <h1>Whole Tone Scales to Major Modes</h1>
-            <Introduction></Introduction>
-            <TraditionalMethod></TraditionalMethod>
-            <WholeToneScales></WholeToneScales>
-            <MajorScalePattern></MajorScalePattern>
+            <Introduction/>
+            <TraditionalMethod/>
+            <WholeToneScales/>
+            <h2>The Whole-Tone Cluster Method</h2>
+            <MajorScalePattern/>
+            <MinorScalePattern/>
+            <h3>Other Major Modes</h3>
+            I've used the word "mode" now a couple of times but haven't defined
+            it. A mode put simpily is a scale that is built by starting on
+            any white key and including all the white keys up to the next octave.
+            <br/>
+            <br/>
+            Above we've already constructed two of the modes the Major mode
+            starting on C and the minor mode starting on A. These are just two
+            of seven possible modes (since we have 7 white keys). Each of these
+            modes have a different pattern of whole-tone clusters that we can
+            memorize, and they each also have a distict sound.
+            <br/>
+            <br/>
+            The seven modes are:
+            <ol>
+              <li>Ionian -- C to C (also called Major)</li>
+              <li>Dorian starting on D</li>
+              <li>Phrygian starting on E</li>
+              <li>Lydian starting on F</li>
+              <li>Mixolydian starting on G</li>
+              <li>Aeolean starting on A (also called Minor)</li>
+              <li>Locrian starting on B</li>
+            </ol>
+            Since we already coverd the first and sixth modes let's look at the
+            remaining 5 below.
+            <br/>
+            <br/>
+            In each of the remaining modes we'll start the visualization on the
+            root note such that all of the keys are white and count the
+            whole-tone clusters to see how we can transpose this mode to other
+            keys.
+            <GenericModePattern modeName="Dorian" noteName="D"/>
+            <GenericModePattern modeName="Phrygian" noteName="E"/>
+            <GenericModePattern modeName="Lydian" noteName="F"/>
+            <GenericModePattern modeName="Mixolydian" noteName="G"/>
+            <GenericModePattern modeName="Locrian" noteName="B"/>
           </header>
         </SoundPlayerProvider>
       </GlobalOptionsProvider>

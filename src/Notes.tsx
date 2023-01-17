@@ -24,6 +24,23 @@ const accidentalOffset = (acc: Accidental): number => {
   return 0;
 };
 
+export const noteNamed = (name: string): Note => {
+  const naturalName = name.substring(0, 1) as NaturalNote;
+  let acc: Accidental = undefined;
+  let chIdx = 1;
+  const ch = name[chIdx];
+  if (ch === '#' || ch === 'b') {
+    acc = `${ch}` as Accidental;
+    chIdx++;
+  }
+  const oct = parseInt(name.substring(chIdx));
+  return {
+    name: naturalName,
+    acc,
+    oct
+  }
+};
+
 export const noteIndex = (note: Note): number => {
   const offset = accidentalOffset(note.acc);
   const noteOrder = CHROMA.indexOf(note.name) + offset;

@@ -6,6 +6,7 @@ import { Note, noteIndex, noteForIndex } from "./Notes";
 import { Key } from "./Key";
 import PianoIcon from '@mui/icons-material/Piano';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
+import { GlobalOptionsContext } from "./GlobalOptions";
 
 export const playNote = (player: SoundPlayer | null, note: Note) => {
   if (note.playable) {
@@ -20,13 +21,17 @@ export const Keyboard: FC<{
   highlighterList: KeyHighlighter[];
   canTranspose?: boolean
 }> = ({ from, to, size = "large", highlighterList = [], canTranspose = false}) => {
+  const globalOptions = useContext(GlobalOptionsContext);
   const player = useContext(SoundPlayerContext);
   const [progress, setProgress] = useState(0.0);
   const [lastTopNote, setLastTopNote] = useState(-1);
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [didFadeIn, setDidFadeIn] = useState(false);
+  const [playRequested, setPlayRequested] = useState(false);
   const [currentHighlighters, setHighlighters] = useState(highlighterList);
   const defaultHl = highlighterList[highlighterList.length - 1];
+  const shouldAnimate = highlighterList.some(hl => hl.opts.shouldAnimate);
+
 
   // Animate in.
   useEffect(() => {
@@ -56,13 +61,16 @@ export const Keyboard: FC<{
     setNotes(allNotes);
   }, [to, from]);
 
+  useEffect(() => {
+    setLastTopNote(-1);
+  }, [globalOptions.kbBackgroundHighlightEnabled]);
   // Effect to update highlighting
   useEffect(() => {
     if (!notes) {
       // console.log("Skip we don't have notes yet.");
       return;
     }
-    const topNoteIndex = progress >= 0.001 ? Math.floor(progress * notes.length) : -1;
+    const topNoteIndex = progress >= 0.001 ? Math.floor(progress * notes.length) : -2;
     if (lastTopNote === topNoteIndex) {
       // console.log("Skip draw as we already drew at this progress.");
       return;
@@ -82,20 +90,23 @@ export const Keyboard: FC<{
           if (index <= topNoteIndex) {
             highlighter?.accept(note);
           }
-        } else {
+        } else if (
+          highlighter.opts.forceBG ||
+          globalOptions.kbBackgroundHighlightEnabled) {
           highlighter?.accept(note);
         }
       });
     }
     const topNote = notes[topNoteIndex];
-    if (didFadeIn && topNote && topNote.playable) {
+    if (didFadeIn && playRequested && topNote && topNote.playable) {
       playNote(player, topNote);
+      setPlayRequested(false)
     }
     // Force render of notes since we changed the contents via highlighter.
     setNotes((previousNotes) => {
       return previousNotes;
     });
-  }, [notes, progress, didFadeIn, lastTopNote, currentHighlighters, player]);
+  }, [notes, progress, didFadeIn, lastTopNote, currentHighlighters, player, globalOptions, playRequested]);
 
   const onChangeStartNote = (
     e: Event,
@@ -109,11 +120,14 @@ export const Keyboard: FC<{
     const newStartNote = noteForIndex(newStartIndex);
     const hl = highlighterList[highlighterList.length - 1];
     hl.opts.startNote = newStartNote;
-    // Force render of notes since we changed the contents of highlighter.
     for (const note of notes) {
       note.playable = false;
     }
     setLastTopNote(-1);
+    // Force render of notes since we changed the contents of highlighter.
+    setHighlighters((previousHl) => {
+      return previousHl;
+    });
   }
 
   const onSliderChange = (
@@ -123,6 +137,7 @@ export const Keyboard: FC<{
   ) => {
     const singleNum = Array.isArray(value) ? value[0] : value;
     const newProgress = singleNum / 100.0;
+    setPlayRequested(true);
     setProgress(newProgress);
   };
 
@@ -135,6 +150,9 @@ export const Keyboard: FC<{
           return <Key key={noteIndex(note)} note={note}></Key>;
         })}
       </div>
+      {
+        shouldAnimate ? 
+        <>
       <div className="kb-slider">
       <PianoIcon/>
       <Slider
@@ -164,6 +182,8 @@ export const Keyboard: FC<{
         onChange={onChangeStartNote} />
       </div> : undefined
         }
+        </> : undefined
+      }
       </div>
     </>
   );

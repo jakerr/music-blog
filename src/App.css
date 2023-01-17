@@ -15,20 +15,42 @@
   --kb-width: 20vw;
 }
 
+.options-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 8px;
+  padding: 13px;
+  opacity: 0.4;
+
+  align-items: flex-end;
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  -webkit-transition: background-color 0.07s ease, opacity 0.1s ease;
+  transition: background-color 0.07s ease, opacity 0.1s ease;
+  z-index: 10;
+}
+
+.options-widget.active {
+  background-color: #2f4f4fed;
+  opacity: 1.0;
+}
+
 .keyboard-wrapper {
   --kb-height: calc(var(--kb-width) * 0.19);
-  padding: 2em;
+  padding: 2.5em 2em 1em 2em;
   background-color: darkslategrey;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
 }
 
 
 .kb-slider {
-  padding: 1em;
+  padding-top: 1em;
   width: var(--kb-width);
   display: flex;
   flex-direction: row;

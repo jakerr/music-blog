@@ -1,10 +1,10 @@
-import React from "react";
 import { ModeBuilder } from "./ModeHighlighters";
 import "./App.css";
 import { KeyHighlighter } from "./KeyHighlighter";
 import { SoundPlayerProvider } from "./SoundPlayer";
 import { Keyboard } from "./Keyboard";
 import { Note } from "./Notes";
+import { GlobalOptionsProvider } from "./GlobalOptions";
 
 const C0: Note = {
   name: "C",
@@ -87,12 +87,22 @@ function TraditionalMethod() {
         <br />
         So starting on C we can make a C major scale like this:
       </p>
-      <Keyboard from={C0} to={C3} size="large" highlighterList={CMaj}></Keyboard>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={CMaj}
+      ></Keyboard>
       <p>
         If we apply that same pattern but start on the next white key up from
         'C' which is 'D' we get this pattern for the D major scale:
       </p>
-      <Keyboard from={C0} to={C3} size="large" highlighterList={DMaj}></Keyboard>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={DMaj}
+      ></Keyboard>
     </>
   );
 }
@@ -104,13 +114,13 @@ function WholeToneScales() {
     .BracketsScaleNumbers()
     .Animate();
   const CWhole: KeyHighlighter[] = [builder.build()];
-  builder.Note(CS0)
-    .ColorSingleSecond();
+  builder.Note(CS0).ColorSingleSecond();
   const CSWhole: KeyHighlighter[] = [builder.build()];
-  const WholeZipped: KeyHighlighter[] = [
-    new ModeBuilder(C0).WholeTone().build(),
-    builder.build(),
-  ];
+  const specialCaseBg = new ModeBuilder(C0)
+    .AlternatingWholeTones()
+    .ColorDualLight()
+    .build();
+  specialCaseBg.opts.forceBG = true;
   return (
     <>
       <h2>Detour - The Whole Tone Scales</h2>
@@ -131,12 +141,22 @@ function WholeToneScales() {
         <br />
         So starting on C we can make a whole tone scale like this:
       </p>
-      <Keyboard from={C0} to={C3} size="large" highlighterList={CWhole}></Keyboard>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={CWhole}
+      ></Keyboard>
       <p>
         If we apply that same pattern but start on the next key up from 'C'
         which is 'C#' we get this pattern for the C-sharp whole-tone scale:
       </p>
-      <Keyboard from={C0} to={C3} size="large" highlighterList={CSWhole}></Keyboard>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={CSWhole}
+      ></Keyboard>
       <p>
         Notice how these two scales look quite similar but are somewhat like
         mirror images of one another. Another interesting thing to notice is how
@@ -158,9 +178,22 @@ function WholeToneScales() {
       <p>
         Since these two whole-tone scales comprise every note on the keyboard
         but have no overlap we can visualize the keyboard as if it were made of
-        these two scales zipped together:
+        these two scales zipped together.
       </p>
-      <Keyboard from={C0} to={C3} size="large" highlighterList={WholeZipped}></Keyboard>
+      <Keyboard
+        from={C0}
+        to={C3}
+        size="large"
+        highlighterList={[specialCaseBg]}
+      />
+      <p>
+        In further sections the keyboard can be highlighted with this above
+        visual aide to remind you of the whole-tone scales by enabling the
+        "HIGHLIGHT WHOLETONES" option in the settings at the bottom right of the
+        screen. It will be off by default to reduce visual clutter and help us
+        train to start seeing the whole-tone scale as they relate to the "blacks
+        and whites".
+      </p>
     </>
   );
 }
@@ -223,7 +256,7 @@ function MajorScalePattern() {
         will start to come together.
         <br />
         <br />
-        Now Let's look at all of the other major scales.  You can build all of
+        Now Let's look at all of the other major scales. You can build all of
         them using this same pattern of 3 of one whole tone scale, and 4 of the
         other. There's a new slider added below that lets you change the root
         note so that you can see this 3-and-4 pattern applied to each root note
@@ -243,16 +276,18 @@ function MajorScalePattern() {
 function App() {
   return (
     <div className="App">
-      <SoundPlayerProvider>
-        <header className="App-header">
-          {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          <h1>Whole Tone Scales to Major Modes</h1>
-          <Introduction></Introduction>
-          <TraditionalMethod></TraditionalMethod>
-          <WholeToneScales></WholeToneScales>
-          <MajorScalePattern></MajorScalePattern>
-        </header>
-      </SoundPlayerProvider>
+      <GlobalOptionsProvider>
+        <SoundPlayerProvider>
+          <header className="App-header">
+            {/* <img src={logo} className="App-logo" alt="logo" /> */}
+            <h1>Whole Tone Scales to Major Modes</h1>
+            <Introduction></Introduction>
+            <TraditionalMethod></TraditionalMethod>
+            <WholeToneScales></WholeToneScales>
+            <MajorScalePattern></MajorScalePattern>
+          </header>
+        </SoundPlayerProvider>
+      </GlobalOptionsProvider>
     </div>
   );
 }

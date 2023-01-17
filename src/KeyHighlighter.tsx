@@ -10,6 +10,7 @@ type KeyHighlighterOptions = {
   evenColor: HighlighterColor,
   shouldAnimate: boolean,
   bracketStyle: BracketStyle,
+  forceBG: boolean
 }
 
 export class KeyHighlighterOptionsBuilder {
@@ -58,6 +59,7 @@ export class KeyHighlighterOptionsBuilder {
       evenColor: this._evenColor,
       shouldAnimate: this._shouldAnimate,
       bracketStyle: this._bracketStyle,
+      forceBG: false
     };
   }
 }

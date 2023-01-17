@@ -124,7 +124,9 @@ function WholeToneScales() {
         The whole tone scales are the scales you get when you start on a note
         and jump whole steps all the way up the keyboard until the next octave.
         You'll notice that whereever you start there are always 6 whole steps
-        before the pattern repeats.
+        before the pattern repeats. One fun thing about these scales is that
+        they might remind you of the "dream sequence" transition sound that you
+        hear in old movies and tv shows.
         <br />
         <br />
         So starting on C we can make a whole tone scale like this:

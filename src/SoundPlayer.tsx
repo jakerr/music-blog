@@ -39,6 +39,8 @@ export const SoundPlayerProvider: React.FC<PropsWithChildren> = ({children}) => 
   const midiSoundsRef = useRef<MIDISounds>(null);
   useEffect(() => {
     if (!midiSoundsRef.current) return;
+    midiSoundsRef.current.setEchoLevel(0.09);
+    midiSoundsRef.current.setMasterVolume(0.5);
     setPlayer(new SoundPlayer(midiSoundsRef.current, 120));
   }, [midiSoundsRef]);
 

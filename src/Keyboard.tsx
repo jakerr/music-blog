@@ -4,6 +4,8 @@ import { KeyHighlighter } from "./KeyHighlighter";
 import { SoundPlayerContext, SoundPlayer } from "./SoundPlayer";
 import { Note, noteIndex, noteForIndex } from "./Notes";
 import { Key } from "./Key";
+import PianoIcon from '@mui/icons-material/Piano';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 export const playNote = (player: SoundPlayer | null, note: Note) => {
   if (note.playable) {
@@ -16,13 +18,15 @@ export const Keyboard: FC<{
   to: Note;
   size?: "small" | "medium" | "large";
   highlighterList: KeyHighlighter[];
-}> = ({ from, to, size = "large", highlighterList = [] }) => {
+  canTranspose?: boolean
+}> = ({ from, to, size = "large", highlighterList = [], canTranspose = false}) => {
   const player = useContext(SoundPlayerContext);
   const [progress, setProgress] = useState(0.0);
   const [lastTopNote, setLastTopNote] = useState(-1);
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [didFadeIn, setDidFadeIn] = useState(false);
   const [currentHighlighters, setHighlighters] = useState(highlighterList);
+  const defaultHl = highlighterList[highlighterList.length - 1];
 
   // Animate in.
   useEffect(() => {
@@ -36,8 +40,8 @@ export const Keyboard: FC<{
           }
           return p + 1 / 37;
         });
-      }, 14);
-    }, 500);
+      }, 10);
+    }, 300);
     return () => clearTimeout(timeoutId);
   }, []);
 
@@ -131,7 +135,8 @@ export const Keyboard: FC<{
           return <Key key={noteIndex(note)} note={note}></Key>;
         })}
       </div>
-      <div className="kb-scrubber">
+      <div className="kb-slider">
+      <PianoIcon/>
       <Slider
         value={Math.floor(progress * 100.0)}
         color="secondary"
@@ -140,11 +145,14 @@ export const Keyboard: FC<{
         valueLabelDisplay="off"
         onChange={onSliderChange} />
       </div>
-      <div className="kb-scrubber">
+        {
+          canTranspose ? 
+      <div className="kb-slider">
+      <QueueMusicIcon/>
       <Slider
         color="secondary"
         size="small"
-        defaultValue={noteIndex(from)}
+        defaultValue={noteIndex(defaultHl.opts.startNote)}
         min={0}
         max={11}
         valueLabelFormat={(value, index) => {
@@ -154,7 +162,8 @@ export const Keyboard: FC<{
         }}
         valueLabelDisplay="on"
         onChange={onChangeStartNote} />
-      </div>
+      </div> : undefined
+        }
       </div>
     </>
   );

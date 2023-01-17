@@ -172,8 +172,8 @@ function MajorScalePattern() {
   const CMaj = builder.build();
   builder.Note(D0);
   const DMaj = builder.build();
-  builder.Note(B0);
-  const BMaj = builder.build();
+  builder.Note(CS0);
+  const CSMaj = builder.build();
   return (
     <>
       <h2>The Whole-Tone Cluster Method</h2>
@@ -221,15 +221,18 @@ function MajorScalePattern() {
         will start to come together.
         <br />
         <br />
-        Now Let's look at B Major. You can still see the clusters of 3 and 4
-        notes from each whole tone scale but the result of starting on B is that
-        there are a lot more black notes in the resulting scale.
+        Now Let's look at all of the other major scales.  You can build all of
+        them using this same pattern of 3 of one whole tone scale, and 4 of the
+        other. There's a new slider added below that lets you change the root
+        note so that you can see this 3-and-4 pattern applied to each root note
+        to give you all 12 major scales.
       </p>
       <Keyboard
         from={C0}
         to={C3}
         size="large"
-        highlighterList={[...WholeToneLightBG, BMaj]}
+        highlighterList={[...WholeToneLightBG, CSMaj]}
+        canTranspose={true}
       ></Keyboard>
     </>
   );

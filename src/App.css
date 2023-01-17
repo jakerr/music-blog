@@ -26,8 +26,13 @@
   margin-bottom: 2em;
 }
 
-.kb-scrubber {
+
+.kb-slider {
+  padding: 1em;
   width: var(--kb-width);
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
 }
 
 .keyboard {

@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { Note, noteColor, bracketClass } from "./Notes";
 
-
 export const Key: FC<{
   note: Note;
 }> = ({ note }) => {

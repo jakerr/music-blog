@@ -17,6 +17,8 @@ export type GlobalOptions = {
 export const OptionsWidget : React.FC<{
   setGlobalOptions: (opts: GlobalOptions) => void
 }> = ({setGlobalOptions}) => {
+  const [rev, setRev] = useState(0);
+  const [appliedRev, setAppliedRev] = useState(0);
   const options = useContext(GlobalOptionsContext);
   const [active, setActive] = useState(false);
   const [highlightsOn, setHighlightsOn] = useState(options.kbBackgroundHighlightEnabled);
@@ -36,11 +38,18 @@ export const OptionsWidget : React.FC<{
   };
 
   useEffect(() => {
-    setGlobalOptions({
-      ...options,
-      kbBackgroundHighlightEnabled: highlightsOn
-    });
-  }, [highlightsOn, options, setGlobalOptions])
+    setRev(rev + 1);
+  }, [highlightsOn]);
+
+  useEffect(() => {
+    if (rev !== appliedRev) {
+      setGlobalOptions({
+        ...options,
+        kbBackgroundHighlightEnabled: highlightsOn
+      });
+      setAppliedRev(rev);
+    }
+  }, [appliedRev, highlightsOn, options, rev, setGlobalOptions])
 
   const settingsColor = active ? "secondary" : "default" 
   const hlColor = highlightsOn ? "secondary" : "default" 

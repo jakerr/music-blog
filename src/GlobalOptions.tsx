@@ -1,5 +1,4 @@
 import {createContext, useContext, useState, useEffect, PropsWithChildren} from "react";
-import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
@@ -38,7 +37,7 @@ export const OptionsWidget : React.FC<{
   };
 
   useEffect(() => {
-    setRev(rev + 1);
+      setRev(r => r + 1);
   }, [highlightsOn]);
 
   useEffect(() => {

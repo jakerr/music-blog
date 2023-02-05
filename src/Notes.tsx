@@ -33,7 +33,7 @@ export const noteNamed = (name: string): Note => {
     acc = `${ch}` as Accidental;
     chIdx++;
   }
-  const oct = parseInt(name.substring(chIdx));
+  const oct = chIdx < name.length ?  parseInt(name.substring(chIdx)) : 0;
   return {
     name: naturalName,
     acc,

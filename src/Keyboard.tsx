@@ -2,10 +2,10 @@ import React, { FC, useEffect, useState, useContext } from "react";
 import Slider from "@mui/material/Slider";
 import { KeyHighlighter } from "./KeyHighlighter";
 import { SoundPlayerContext, SoundPlayer } from "./SoundPlayer";
-import { Note, noteIndex, noteForIndex } from "./Notes";
+import { Note, noteIndex, noteForIndex, noteNamed } from "./Notes";
 import { Key } from "./Key";
 import { GlobalOptionsContext } from "./GlobalOptions";
-import { MajorMode, MajorModes } from "./ModeHighlighters";
+import { MajorMode, MajorModes, ModeBuilder } from "./ModeHighlighters";
 
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
@@ -17,18 +17,37 @@ export const playNote = (player: SoundPlayer | null, note: Note) => {
   }
 };
 
+const WholeToneLightBG: KeyHighlighter[] = [
+  new ModeBuilder(noteNamed("C0")).AlternatingWholeTones().ColorDualLight().build(),
+];
+
+const modeStarts = [0, 2, 4, 5, 7, 9, 11];
+const indexForMode = (mode: MajorMode): number => {
+  const modeIndex = Object.keys(MajorModes).indexOf(mode);
+  return modeStarts[modeIndex];
+}
+
+
 export const Keyboard: FC<{
   from: Note;
   to: Note;
+  scaleStart?: Note;
+  scaleMode?: MajorMode;
   size?: "small" | "medium" | "large";
-  highlighterList: KeyHighlighter[];
+  shouldAnimate?: boolean;
   canTranspose?: boolean;
+  canChangeMode?: boolean;
+  staticHighlighters?: KeyHighlighter[];
 }> = ({
   from,
   to,
+  scaleStart,
+  scaleMode,
   size = "large",
-  highlighterList = [],
+  shouldAnimate = false,
   canTranspose = false,
+  canChangeMode = false,
+  staticHighlighters = [],
 }) => {
   const globalOptions = useContext(GlobalOptionsContext);
   const player = useContext(SoundPlayerContext);
@@ -37,9 +56,9 @@ export const Keyboard: FC<{
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [didFadeIn, setDidFadeIn] = useState(false);
   const [playRequested, setPlayRequested] = useState(false);
-  const [currentHighlighters, setHighlighters] = useState(highlighterList);
-  const defaultHl = highlighterList[highlighterList.length - 1];
-  const shouldAnimate = highlighterList.some((hl) => hl.opts.shouldAnimate);
+  const [currentHighlighters, setHighlighters] = useState<KeyHighlighter[]>(staticHighlighters);
+  const [currentScaleStart, setCurrentScaleStart] = useState(scaleStart);
+  const [currentScaleMode, setCurrentScaleMode] = useState(scaleMode);
 
   // Animate in.
   useEffect(() => {
@@ -58,6 +77,24 @@ export const Keyboard: FC<{
     return () => clearTimeout(timeoutId);
   }, []);
 
+  // Effect to update highlighters.
+  useEffect(() => {
+    if (staticHighlighters.length > 0 || currentScaleStart === undefined || currentScaleMode === undefined || notes === null) {
+      return;
+    }
+    const backgroundHl = globalOptions.kbBackgroundHighlightEnabled ? WholeToneLightBG : [];
+    const scaleHl = new ModeBuilder(currentScaleStart)
+    .ModeNamed(currentScaleMode)
+    .ColorDual()
+    .BracketsRunNumbers()
+    .Animate(shouldAnimate).build();
+    for (const note of notes) {
+      note.playable = false;
+    }
+    setHighlighters([...backgroundHl, scaleHl]);
+    setLastTopNote(-1);
+  }, [currentScaleMode, currentScaleStart, globalOptions.kbBackgroundHighlightEnabled, notes, shouldAnimate, staticHighlighters.length]);
+
   // Initial effect to set up notes.
   useEffect(() => {
     const fromIndex = noteIndex(from);
@@ -72,6 +109,7 @@ export const Keyboard: FC<{
   useEffect(() => {
     setLastTopNote(-1);
   }, [globalOptions.kbBackgroundHighlightEnabled]);
+
   // Effect to update highlighting
   useEffect(() => {
     if (!notes) {
@@ -99,10 +137,7 @@ export const Keyboard: FC<{
           if (index <= topNoteIndex) {
             highlighter?.accept(note);
           }
-        } else if (
-          highlighter.opts.forceBG ||
-          globalOptions.kbBackgroundHighlightEnabled
-        ) {
+        } else {
           highlighter?.accept(note);
         }
       });
@@ -135,20 +170,9 @@ export const Keyboard: FC<{
   ) => {
     if (notes === null) return;
     const singleValue = Array.isArray(value) ? value[0] : value;
-    const modeStops = [0, 2, 4, 5, 7, 9, 11];
-    const modeIndex = modeStops.findIndex((v) => v === singleValue);
+    const modeIndex = modeStarts.findIndex((v) => v === singleValue);
     const modeName = Object.keys(MajorModes)[modeIndex];
-    const newMode = MajorModes[modeName as keyof typeof MajorModes];
-    const hl = highlighterList[highlighterList.length - 1];
-    hl.opts.pattern = newMode;
-    for (const note of notes) {
-      note.playable = false;
-    }
-    setLastTopNote(-1);
-    // Force render of notes since we changed the contents of highlighter.
-    setHighlighters((previousHl) => {
-      return previousHl;
-    });
+    setCurrentScaleMode(modeName as MajorMode);
   };
 
   const onChangeStartNote = (
@@ -161,16 +185,7 @@ export const Keyboard: FC<{
     const kbFirstKey = noteIndex(from);
     const newStartIndex = kbFirstKey + singleValue;
     const newStartNote = noteForIndex(newStartIndex);
-    const hl = highlighterList[highlighterList.length - 1];
-    hl.opts.startNote = newStartNote;
-    for (const note of notes) {
-      note.playable = false;
-    }
-    setLastTopNote(-1);
-    // Force render of notes since we changed the contents of highlighter.
-    setHighlighters((previousHl) => {
-      return previousHl;
-    });
+    setCurrentScaleStart(newStartNote);
   };
 
   const onSliderChange = (
@@ -202,18 +217,17 @@ export const Keyboard: FC<{
                 value={Math.floor(progress * 100.0)}
                 color="secondary"
                 size="small"
-                defaultValue={0}
                 valueLabelDisplay="off"
                 onChange={onSliderChange}
               />
             </div>
-            {canTranspose ? (
+            {(canTranspose && currentScaleStart !== undefined) ? (
               <div className="kb-slider">
                 <QueueMusicIcon />
                 <Slider
                   color="secondary"
                   size="small"
-                  defaultValue={noteIndex(defaultHl.opts.startNote)}
+                  value={noteIndex(currentScaleStart)}
                   marks={true}
                   min={0}
                   max={11}
@@ -227,16 +241,16 @@ export const Keyboard: FC<{
                 />
               </div>
             ) : undefined}
-            {canTranspose ? (
+            {(canChangeMode && currentScaleMode !== undefined) ? (
               <div className="kb-slider">
                 <PaletteIcon/>
                 <Slider
                   color="secondary"
                   size="small"
-                  defaultValue={noteIndex(defaultHl.opts.startNote)}
+                  value={indexForMode(currentScaleMode)}
                   min={0}
                   max={11}
-                  marks={[0, 2, 4, 5, 7, 9, 11].map((value) => {
+                  marks={modeStarts.map((value) => {
                     return {
                       value: value,
                       label: undefined,

@@ -100,8 +100,8 @@ export class ModeBuilder {
     return this;
   }
 
-  Animate() {
-    this._opts.shouldAnimate(true);
+  Animate(shouldAnimate = true) {
+    this._opts.shouldAnimate(shouldAnimate);
     return this;
   }
 

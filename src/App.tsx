@@ -12,10 +12,6 @@ const CS0 = noteNamed("C#0");
 const D0 = noteNamed("D0");
 const C3 = noteNamed("C3");
 
-const WholeToneLightBG: KeyHighlighter[] = [
-  new ModeBuilder(C0).AlternatingWholeTones().ColorDualLight().build(),
-];
-
 function Introduction() {
   return (
     <p>
@@ -79,7 +75,8 @@ function TraditionalMethod() {
         from={C0}
         to={C3}
         size="large"
-        highlighterList={CMaj}
+        staticHighlighters={CMaj}
+        shouldAnimate={true}
       ></Keyboard>
       <p>
         If we apply that same pattern but start on the next white key up from
@@ -89,7 +86,8 @@ function TraditionalMethod() {
         from={C0}
         to={C3}
         size="large"
-        highlighterList={DMaj}
+        staticHighlighters={DMaj}
+        shouldAnimate={true}
       ></Keyboard>
     </>
   );
@@ -133,7 +131,8 @@ function WholeToneScales() {
         from={C0}
         to={C3}
         size="large"
-        highlighterList={CWhole}
+        staticHighlighters={CWhole}
+        shouldAnimate={true}
       ></Keyboard>
       <p>
         If we apply that same pattern but start on the next key up from 'C'
@@ -143,7 +142,8 @@ function WholeToneScales() {
         from={C0}
         to={C3}
         size="large"
-        highlighterList={CSWhole}
+        staticHighlighters={CSWhole}
+        shouldAnimate={true}
       ></Keyboard>
       <p>
         Notice how these two scales look quite similar but are somewhat like
@@ -172,7 +172,7 @@ function WholeToneScales() {
         from={C0}
         to={C3}
         size="large"
-        highlighterList={[specialCaseBg]}
+        staticHighlighters={[specialCaseBg]}
       />
       <p>
         In further sections the keyboard can be highlighted with this above
@@ -187,16 +187,6 @@ function WholeToneScales() {
 }
 
 function MajorScalePattern() {
-  const builder = new ModeBuilder(C0)
-    .Ionian()
-    .ColorDual()
-    .BracketsRunNumbers()
-    .Animate();
-  const CMaj = builder.build();
-  builder.Note(D0);
-  const DMaj = builder.build();
-  builder.Note(CS0);
-  const CSMaj = builder.build();
   return (
     <>
       <h3>Major Scales</h3>
@@ -214,8 +204,10 @@ function MajorScalePattern() {
       <Keyboard
         from={C0}
         to={C3}
+        scaleStart={noteNamed("C0")}
+        scaleMode="Ionian"
         size="large"
-        highlighterList={[...WholeToneLightBG, CMaj]}
+        shouldAnimate={true}
       ></Keyboard>
       <p>
         As you can see above the C major scale is a pattern of 3 whole-tones
@@ -233,8 +225,10 @@ function MajorScalePattern() {
       <Keyboard
         from={C0}
         to={C3}
+        scaleStart={noteNamed("D0")}
+        scaleMode="Ionian"
         size="large"
-        highlighterList={[...WholeToneLightBG, DMaj]}
+        shouldAnimate={true}
       ></Keyboard>
       <p>
         It can take some practice to really see those clusters of 3 and 4 but if
@@ -252,21 +246,17 @@ function MajorScalePattern() {
       <Keyboard
         from={C0}
         to={C3}
+        scaleStart={noteNamed("C#0")}
+        scaleMode="Ionian"
         size="large"
-        highlighterList={[...WholeToneLightBG, CSMaj]}
         canTranspose={true}
+        shouldAnimate={true}
       ></Keyboard>
     </>
   );
 }
 
 function MinorScalePattern() {
-  const builder = new ModeBuilder(noteNamed("A0"))
-    .Aeolean()
-    .ColorDual()
-    .BracketsRunNumbers()
-    .Animate();
-  const AMin = builder.build();
   return (
     <>
       <h3>Minor Scales</h3>
@@ -284,8 +274,9 @@ function MinorScalePattern() {
       <Keyboard
         from={C0}
         to={C3}
+        scaleStart={noteNamed("A0")}
+        scaleMode="Aeolian"
         size="large"
-        highlighterList={[...WholeToneLightBG, AMin]}
         canTranspose={true}
       ></Keyboard>
     </>
@@ -296,12 +287,6 @@ const GenericModePattern: React.FC<{
   modeName: MajorMode,
   noteName: string
 }> = ({modeName, noteName}) => {
-  const builder = new ModeBuilder(noteNamed(`${noteName}0`))
-    .ModeNamed(modeName)
-    .ColorDual()
-    .BracketsRunNumbers()
-    .Animate();
-  const modeHl = builder.build();
   const pattern = MajorModes[modeName];
   const patternString = pattern.join(', ');
   return (
@@ -321,9 +306,12 @@ const GenericModePattern: React.FC<{
       <Keyboard
         from={C0}
         to={C3}
+        scaleStart={noteNamed(noteName)}
+        scaleMode={modeName}
         size="large"
-        highlighterList={[...WholeToneLightBG, modeHl]}
+        shouldAnimate={true}
         canTranspose={true}
+        canChangeMode={true}
       ></Keyboard>
     </>
   );

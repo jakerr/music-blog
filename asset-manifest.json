@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/music-blog/static/css/main.7dfd4512.css",
-    "main.js": "/music-blog/static/js/main.c6bc0504.js",
+    "main.css": "/music-blog/static/css/main.95b09a12.css",
+    "main.js": "/music-blog/static/js/main.df1c8e04.js",
     "static/js/787.ec18090e.chunk.js": "/music-blog/static/js/787.ec18090e.chunk.js",
     "index.html": "/music-blog/index.html",
-    "main.7dfd4512.css.map": "/music-blog/static/css/main.7dfd4512.css.map",
-    "main.c6bc0504.js.map": "/music-blog/static/js/main.c6bc0504.js.map",
+    "main.95b09a12.css.map": "/music-blog/static/css/main.95b09a12.css.map",
+    "main.df1c8e04.js.map": "/music-blog/static/js/main.df1c8e04.js.map",
     "787.ec18090e.chunk.js.map": "/music-blog/static/js/787.ec18090e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7dfd4512.css",
-    "static/js/main.c6bc0504.js"
+    "static/css/main.95b09a12.css",
+    "static/js/main.df1c8e04.js"
   ]
 }

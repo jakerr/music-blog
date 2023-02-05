@@ -4,10 +4,12 @@ import { KeyHighlighter } from "./KeyHighlighter";
 import { SoundPlayerContext, SoundPlayer } from "./SoundPlayer";
 import { Note, noteIndex, noteForIndex } from "./Notes";
 import { Key } from "./Key";
-import PianoIcon from "@mui/icons-material/Piano";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { GlobalOptionsContext } from "./GlobalOptions";
 import { MajorMode, MajorModes } from "./ModeHighlighters";
+
+import PianoIcon from "@mui/icons-material/Piano";
+import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import PaletteIcon from '@mui/icons-material/Palette';
 
 export const playNote = (player: SoundPlayer | null, note: Note) => {
   if (note.playable) {
@@ -227,7 +229,7 @@ export const Keyboard: FC<{
             ) : undefined}
             {canTranspose ? (
               <div className="kb-slider">
-                <QueueMusicIcon />
+                <PaletteIcon/>
                 <Slider
                   color="secondary"
                   size="small"

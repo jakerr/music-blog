@@ -14,22 +14,40 @@ const C3 = noteNamed("C3");
 
 function Introduction() {
   return (
-    <p>
-      This is an interactive music theory tutorial that will introduce you to a
-      non-standard method of learning all of the major scales as well as the
-      major modes.
-      <br /> The method I'll introduce doesn't require the linear following of a
-      pattern that you may be used to: "whole, whole, half, whole, whole, whole,
-      half" (don't worry if you're not familiar, we will review it below) and
-      instead teaches you to see the scales as alternating groups of differnt
-      kinds of notes "3 of one then 4 of another".
-      <br />
-      <br /> What are these two kinds of notes? Well in interest of not burying
-      the lede I'm talking about the two whole tone scales and looking at the
-      construction of the major scales and modes as clusters of notes from those
-      two scales in alternate. If that isn't too clear, don't worry it's all
-      layed out in detail below!
-    </p>
+    <>
+      <p>
+        This is an interactive music theory tutorial that will introduce you to
+        a non-standard method of learning all of the major scales as well as the
+        major modes.
+      </p>
+      <p>
+        If you prefer to jump straight to a tool for exploring the major modes
+        without reading click here:
+        <a href="/modes-explorer">Major Modes Explorer</a>
+      </p>
+      <p>
+        <br />
+        <br />
+        I won't go into great detail about how the different modes sound or when
+        they are useful. There is a lot of great content out there on that
+        subject, that you can find by searching for "music theory modes". What I
+        want to focus on is a method for identifying and memorizig the notes in
+        each mode using the piano keyboard as a visual aide.
+        <br />
+        <br />
+        The method I'll introduce doesn't require the linear following of a
+        pattern that you may be used to: "whole, whole, half, whole, whole,
+        whole, half" (don't worry if you're not familiar, we will review it
+        below) and instead teaches you to see the scales as alternating groups
+        of differnt kinds of notes "3 of one then 4 of another".
+        <br />
+        <br /> What are these two kinds of notes? Well in interest of not
+        burying the lede I'm talking about the two whole tone scales and looking
+        at the construction of the major scales and modes as clusters of notes
+        from those two scales in alternate. If that isn't too clear, don't worry
+        it's all layed out in detail below!
+      </p>
+    </>
   );
 }
 

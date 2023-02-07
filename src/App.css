@@ -86,12 +86,13 @@
     box-shadow 0.05s ease;
   transition: background-color 0.07s ease,
     box-shadow 0.05s ease;
+  position: relative;
 }
 
 .key > .note-label {
   display: inline-block;
-  position: relative;
-  bottom: -80%;
+  position: absolute;
+  bottom: 4px;
   width: 100%;
   text-align: center;
   font-size: 0.8em;

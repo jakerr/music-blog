@@ -27,7 +27,7 @@ function MajorModesExplorer() {
               canTranspose={true}
               canChangeMode={true}
             ></Keyboard>
-            <a href="/#/" className="back-to-home-link">&lt; Back to Major Modes Tutorial</a>
+            <a href="/music-blog/#/" className="back-to-home-link">&lt; Back to Major Modes Tutorial</a>
           </header>
         </SoundPlayerProvider>
       </GlobalOptionsProvider>

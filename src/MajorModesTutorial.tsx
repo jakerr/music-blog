@@ -23,8 +23,8 @@ function Introduction() {
       <p>
         If you prefer to jump straight to a tool for exploring the major modes
         without reading click here:
-        <a href="/#/modes-explorer" className="modes-thumb-link">
-          <img src="/explorer-thumb.png" alt="Major Modes Explorer" />
+        <a href="/music-blog/#/modes-explorer" className="modes-thumb-link">
+          <img src="/music-blog/explorer-thumb.png" alt="Major Modes Explorer" />
         </a>
       </p>
       <p>

@@ -1,15 +1,27 @@
 {
   "files": {
-    "main.css": "/music-blog/static/css/main.656c8eb9.css",
-    "main.js": "/music-blog/static/js/main.5e31c550.js",
-    "static/js/787.ec18090e.chunk.js": "/music-blog/static/js/787.ec18090e.chunk.js",
-    "index.html": "/music-blog/index.html",
-    "main.656c8eb9.css.map": "/music-blog/static/css/main.656c8eb9.css.map",
-    "main.5e31c550.js.map": "/music-blog/static/js/main.5e31c550.js.map",
-    "787.ec18090e.chunk.js.map": "/music-blog/static/js/787.ec18090e.chunk.js.map"
+    "main.css": "/static/css/main.e6c13ad2.css",
+    "main.js": "/static/js/main.cd4400b4.js",
+    "static/css/885.32757dd7.chunk.css": "/static/css/885.32757dd7.chunk.css",
+    "static/js/885.f3e97aa0.chunk.js": "/static/js/885.f3e97aa0.chunk.js",
+    "static/css/577.32757dd7.chunk.css": "/static/css/577.32757dd7.chunk.css",
+    "static/js/577.1201891a.chunk.js": "/static/js/577.1201891a.chunk.js",
+    "static/js/787.ec18090e.chunk.js": "/static/js/787.ec18090e.chunk.js",
+    "static/js/760.d2620323.chunk.js": "/static/js/760.d2620323.chunk.js",
+    "static/js/905.c66e446c.chunk.js": "/static/js/905.c66e446c.chunk.js",
+    "index.html": "/index.html",
+    "main.e6c13ad2.css.map": "/static/css/main.e6c13ad2.css.map",
+    "main.cd4400b4.js.map": "/static/js/main.cd4400b4.js.map",
+    "885.32757dd7.chunk.css.map": "/static/css/885.32757dd7.chunk.css.map",
+    "885.f3e97aa0.chunk.js.map": "/static/js/885.f3e97aa0.chunk.js.map",
+    "577.32757dd7.chunk.css.map": "/static/css/577.32757dd7.chunk.css.map",
+    "577.1201891a.chunk.js.map": "/static/js/577.1201891a.chunk.js.map",
+    "787.ec18090e.chunk.js.map": "/static/js/787.ec18090e.chunk.js.map",
+    "760.d2620323.chunk.js.map": "/static/js/760.d2620323.chunk.js.map",
+    "905.c66e446c.chunk.js.map": "/static/js/905.c66e446c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.656c8eb9.css",
-    "static/js/main.5e31c550.js"
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.cd4400b4.js"
   ]
 }

@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
+import { GlobalOptionsProvider } from "./GlobalOptions";
+import { SoundPlayerProvider } from "./SoundPlayer";
 const MajorModesTutorial = lazy(() => import("./MajorModesTutorial"));
 const MajorModesExplorer = lazy(() => import("./MajorModesExplorer"));
 
@@ -13,7 +15,6 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
     </div>
   );
 }
-
 
 function NotFoundPage() {
   return (
@@ -32,13 +33,20 @@ function App() {
       }}
     >
       <Suspense fallback={<div>...</div>}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<MajorModesTutorial/>}></Route>
-            <Route path="/modes-explorer" element={<MajorModesExplorer/>}></Route>
-            <Route path='*' element={<NotFoundPage />}/>
-          </Routes>
-        </Router>
+        <GlobalOptionsProvider>
+          <SoundPlayerProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<MajorModesTutorial />}></Route>
+                <Route
+                  path="/modes-explorer"
+                  element={<MajorModesExplorer />}
+                ></Route>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Router>
+          </SoundPlayerProvider>
+        </GlobalOptionsProvider>
       </Suspense>
     </ErrorBoundary>
   );

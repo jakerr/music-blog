@@ -1,9 +1,7 @@
 import { MajorMode, MajorModes, ModeBuilder } from "./ModeHighlighters";
 import "./App.css";
 import { KeyHighlighter } from "./KeyHighlighter";
-import { SoundPlayerProvider } from "./SoundPlayer";
 import { Keyboard } from "./Keyboard";
-import { GlobalOptionsProvider } from "./GlobalOptions";
 import { noteNamed } from "./Notes";
 // import { C0, D0, C3, CS0 } from "./NoteMacros";
 
@@ -31,7 +29,7 @@ function Introduction() {
       <p>
         If you prefer to jump straight to a tool for exploring the major modes
         without reading click here:
-        <ExplorerLink/>
+        <ExplorerLink />
       </p>
       <p>
         I won't go into great detail about how the different modes sound or when
@@ -254,10 +252,10 @@ function MajorScalePattern() {
         As you can see above the C major scale is a pattern of 3 whole-tones
         from one scale, and then 4 from the other.
         <br />
-        I hope you'll agree that this much easier to remember than the traditional
-        (w, w, h, w, w, w, h) formula, and maybe more importantly, you can just
-        see the shape of the scale by really paying attention to that cluster of
-        3 next to a cluster of 4.
+        I hope you'll agree that this much easier to remember than the
+        traditional (w, w, h, w, w, w, h) formula, and maybe more importantly,
+        you can just see the shape of the scale by really paying attention to
+        that cluster of 3 next to a cluster of 4.
         <br />
         <br />
         Let's try this pattern out starting on D as we did in the introduction
@@ -364,63 +362,58 @@ const GenericModePattern: React.FC<{
 function MajorModesTutorial() {
   return (
     <div className="App">
-      <GlobalOptionsProvider>
-        <SoundPlayerProvider>
-          <header className="App-header">
-            {/* <img src={logo} className="App-logo" alt="logo" /> */}
-            <h1>Whole Tone Scales to Major Modes</h1>
-            <Introduction />
-            <TraditionalMethod />
-            <WholeToneScales />
-            <h2>The Whole-Tone Cluster Method</h2>
-            <MajorScalePattern />
-            <MinorScalePattern />
-            <h3>Other Major Modes</h3>
-            I've used the word "mode" now a couple of times but haven't defined
-            it. A mode put simply is a scale that is built by starting on any
-            white key and including all the white keys up to the next octave.
-            <br />
-            <br />
-            Above we've already constructed two of the modes the Major mode
-            starting on C and the minor mode starting on A. These are just two
-            of seven possible modes (since we have 7 white keys). Each of these
-            modes have a different pattern of whole-tone clusters that we can
-            memorize, and they each also have a distinct sound.
-            <br />
-            <br />
-            The seven modes are:
-            <ol>
-              <li>Ionian starting on C (also called Major)</li>
-              <li>Dorian starting on D</li>
-              <li>Phrygian starting on E</li>
-              <li>Lydian starting on F</li>
-              <li>Mixolydian starting on G</li>
-              <li>Aeolean starting on A (also called Minor)</li>
-              <li>Locrian starting on B</li>
-            </ol>
-            Since we already covered the first and sixth modes let's look at the
-            remaining 5 below.
-            <br />
-            <br />
-            In each of the remaining modes we'll start the visualization on the
-            root note such that all of the keys are white and count the
-            whole-tone clusters to see how we can transpose this mode to other
-            keys.
-            <GenericModePattern modeName="Dorian" noteName="D" />
-            <GenericModePattern modeName="Phrygian" noteName="E" />
-            <GenericModePattern modeName="Lydian" noteName="F" />
-            <GenericModePattern modeName="Mixolydian" noteName="G" />
-            <GenericModePattern modeName="Locrian" noteName="B" />
-            <h2>What's next?</h2>
-            <p>
-              If you've made it this far, thanks for reading! You can practice
-              what you've learned and explore all of the major modes in the
-              Major Modes Explorer below.
-              <ExplorerLink/>
-            </p>
-          </header>
-        </SoundPlayerProvider>
-      </GlobalOptionsProvider>
+      <header className="App-header">
+        {/* <img src={logo} className="App-logo" alt="logo" /> */}
+        <h1>Whole Tone Scales to Major Modes</h1>
+        <Introduction />
+        <TraditionalMethod />
+        <WholeToneScales />
+        <h2>The Whole-Tone Cluster Method</h2>
+        <MajorScalePattern />
+        <MinorScalePattern />
+        <h3>Other Major Modes</h3>
+        I've used the word "mode" now a couple of times but haven't defined it.
+        A mode put simply is a scale that is built by starting on any white key
+        and including all the white keys up to the next octave.
+        <br />
+        <br />
+        Above we've already constructed two of the modes the Major mode starting
+        on C and the minor mode starting on A. These are just two of seven
+        possible modes (since we have 7 white keys). Each of these modes have a
+        different pattern of whole-tone clusters that we can memorize, and they
+        each also have a distinct sound.
+        <br />
+        <br />
+        The seven modes are:
+        <ol>
+          <li>Ionian starting on C (also called Major)</li>
+          <li>Dorian starting on D</li>
+          <li>Phrygian starting on E</li>
+          <li>Lydian starting on F</li>
+          <li>Mixolydian starting on G</li>
+          <li>Aeolean starting on A (also called Minor)</li>
+          <li>Locrian starting on B</li>
+        </ol>
+        Since we already covered the first and sixth modes let's look at the
+        remaining 5 below.
+        <br />
+        <br />
+        In each of the remaining modes we'll start the visualization on the root
+        note such that all of the keys are white and count the whole-tone
+        clusters to see how we can transpose this mode to other keys.
+        <GenericModePattern modeName="Dorian" noteName="D" />
+        <GenericModePattern modeName="Phrygian" noteName="E" />
+        <GenericModePattern modeName="Lydian" noteName="F" />
+        <GenericModePattern modeName="Mixolydian" noteName="G" />
+        <GenericModePattern modeName="Locrian" noteName="B" />
+        <h2>What's next?</h2>
+        <p>
+          If you've made it this far, thanks for reading! You can practice what
+          you've learned and explore all of the major modes in the Major Modes
+          Explorer below.
+          <ExplorerLink />
+        </p>
+      </header>
     </div>
   );
 }

@@ -1,27 +1,27 @@
 {
   "files": {
     "main.css": "/music-blog/static/css/main.e6c13ad2.css",
-    "main.js": "/music-blog/static/js/main.d1690885.js",
+    "main.js": "/music-blog/static/js/main.9e98700c.js",
     "static/css/885.32757dd7.chunk.css": "/music-blog/static/css/885.32757dd7.chunk.css",
-    "static/js/885.e2310312.chunk.js": "/music-blog/static/js/885.e2310312.chunk.js",
+    "static/js/885.08f069ac.chunk.js": "/music-blog/static/js/885.08f069ac.chunk.js",
     "static/css/577.32757dd7.chunk.css": "/music-blog/static/css/577.32757dd7.chunk.css",
-    "static/js/577.88b6bd0d.chunk.js": "/music-blog/static/js/577.88b6bd0d.chunk.js",
+    "static/js/577.800468e2.chunk.js": "/music-blog/static/js/577.800468e2.chunk.js",
     "static/js/787.ec18090e.chunk.js": "/music-blog/static/js/787.ec18090e.chunk.js",
-    "static/js/760.d2620323.chunk.js": "/music-blog/static/js/760.d2620323.chunk.js",
-    "static/js/905.c66e446c.chunk.js": "/music-blog/static/js/905.c66e446c.chunk.js",
+    "static/js/150.878588f6.chunk.js": "/music-blog/static/js/150.878588f6.chunk.js",
+    "static/js/905.45dad905.chunk.js": "/music-blog/static/js/905.45dad905.chunk.js",
     "index.html": "/music-blog/index.html",
     "main.e6c13ad2.css.map": "/music-blog/static/css/main.e6c13ad2.css.map",
-    "main.d1690885.js.map": "/music-blog/static/js/main.d1690885.js.map",
+    "main.9e98700c.js.map": "/music-blog/static/js/main.9e98700c.js.map",
     "885.32757dd7.chunk.css.map": "/music-blog/static/css/885.32757dd7.chunk.css.map",
-    "885.e2310312.chunk.js.map": "/music-blog/static/js/885.e2310312.chunk.js.map",
+    "885.08f069ac.chunk.js.map": "/music-blog/static/js/885.08f069ac.chunk.js.map",
     "577.32757dd7.chunk.css.map": "/music-blog/static/css/577.32757dd7.chunk.css.map",
-    "577.88b6bd0d.chunk.js.map": "/music-blog/static/js/577.88b6bd0d.chunk.js.map",
+    "577.800468e2.chunk.js.map": "/music-blog/static/js/577.800468e2.chunk.js.map",
     "787.ec18090e.chunk.js.map": "/music-blog/static/js/787.ec18090e.chunk.js.map",
-    "760.d2620323.chunk.js.map": "/music-blog/static/js/760.d2620323.chunk.js.map",
-    "905.c66e446c.chunk.js.map": "/music-blog/static/js/905.c66e446c.chunk.js.map"
+    "150.878588f6.chunk.js.map": "/music-blog/static/js/150.878588f6.chunk.js.map",
+    "905.45dad905.chunk.js.map": "/music-blog/static/js/905.45dad905.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.d1690885.js"
+    "static/js/main.9e98700c.js"
   ]
 }

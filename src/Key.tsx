@@ -1,9 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
+import { GlobalOptionsContext } from "./GlobalOptions";
 import { Note, noteColor, bracketClass, prettyNoteName } from "./Notes";
 
 export const Key: FC<{
   note: Note;
 }> = ({ note }) => {
+  const globals = useContext(GlobalOptionsContext);
   const blackWhite = noteColor(note);
   const hl = note.highlight ?? "";
   const bracketCss = bracketClass(note.bracket);
@@ -15,7 +17,9 @@ export const Key: FC<{
       <div className={`key-bracket ${bracketCss} ${bracketColor}`}>
         <div className={`key-bracket-label`}>{note.bracketLabel}</div>
       </div>
-      <span className="note-label">{prettyName}</span>
+      {globals.kbNoteNamesEnabled === false ? null : (
+        <span className="note-label">{prettyName}</span>
+      )}
     </div>
   );
 };

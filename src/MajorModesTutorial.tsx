@@ -12,6 +12,14 @@ const CS0 = noteNamed("C#0");
 const D0 = noteNamed("D0");
 const C3 = noteNamed("C3");
 
+function ExplorerLink() {
+  return (
+    <a href="/music-blog/#/modes-explorer" className="modes-thumb-link">
+      <img src="/music-blog/explorer-thumb.png" alt="Major Modes Explorer" />
+    </a>
+  );
+}
+
 function Introduction() {
   return (
     <>
@@ -23,9 +31,7 @@ function Introduction() {
       <p>
         If you prefer to jump straight to a tool for exploring the major modes
         without reading click here:
-        <a href="/music-blog/#/modes-explorer" className="modes-thumb-link">
-          <img src="/music-blog/explorer-thumb.png" alt="Major Modes Explorer" />
-        </a>
+        <ExplorerLink/>
       </p>
       <p>
         I won't go into great detail about how the different modes sound or when
@@ -410,9 +416,7 @@ function MajorModesTutorial() {
               If you've made it this far, thanks for reading! You can practice
               what you've learned and explore all of the major modes in the
               Major Modes Explorer below.
-              <a href="/#/modes-explorer" className="modes-thumb-link">
-                <img src="/explorer-thumb.png" alt="Major Modes Explorer" />
-              </a>
+              <ExplorerLink/>
             </p>
           </header>
         </SoundPlayerProvider>

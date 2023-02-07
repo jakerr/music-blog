@@ -39,7 +39,7 @@
 
 .keyboard-wrapper {
   --kb-height: calc(var(--kb-width) * 0.19);
-  padding: 2.5em 2em 1em 2em;
+  padding: 1em 2em 1em 2em;
   background-color: darkslategrey;
   border-radius: 4px;
   display: flex;
@@ -204,6 +204,41 @@
 
 .key-bracket-label:empty {
   display: none;
+}
+
+.scale-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  align-items: center;
+}
+
+.scale-name {
+  font-size: 1.5em;
+  font-weight: 100;
+  margin-bottom: 0.5em;
+}
+
+.scale-info>.pattern-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  align-items: center;
+  border: 1px solid rgba(32, 32, 32, 0.2);
+}
+.scale-info>.pattern-info>.header {
+  width: 100%;
+  text-align: center;
+  background-color: rgba(32, 32, 32, 0.538);
+  padding: 0.4em;
+}
+
+.scale-info>.pattern-info>.value {
+  font-size: 0.8em;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(97, 97, 97, 0.538);
+  padding: 0.4em;
 }
 
 @media (prefers-reduced-motion: no-preference) {

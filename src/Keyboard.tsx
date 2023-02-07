@@ -2,14 +2,26 @@ import React, { FC, useEffect, useState, useContext } from "react";
 import Slider from "@mui/material/Slider";
 import { KeyHighlighter } from "./KeyHighlighter";
 import { SoundPlayerContext, SoundPlayer } from "./SoundPlayer";
-import { Note, noteIndex, noteForIndex, noteNamed } from "./Notes";
+import {
+  Note,
+  noteIndex,
+  noteForIndex,
+  noteNamed,
+  prettyNoteName,
+} from "./Notes";
 import { Key } from "./Key";
 import { GlobalOptionsContext } from "./GlobalOptions";
-import { MajorMode, MajorModes, ModeBuilder } from "./ModeHighlighters";
+import {
+  MajorMode,
+  MajorModes,
+  ModeBuilder,
+  prettyModeName,
+  prettyPattern,
+} from "./ModeHighlighters";
 
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
-import PaletteIcon from '@mui/icons-material/Palette';
+import PaletteIcon from "@mui/icons-material/Palette";
 
 export const playNote = (player: SoundPlayer | null, note: Note) => {
   if (note.playable) {
@@ -18,15 +30,47 @@ export const playNote = (player: SoundPlayer | null, note: Note) => {
 };
 
 const WholeToneLightBG: KeyHighlighter[] = [
-  new ModeBuilder(noteNamed("C0")).AlternatingWholeTones().ColorDualLight().build(),
+  new ModeBuilder(noteNamed("C0"))
+    .AlternatingWholeTones()
+    .ColorDualLight()
+    .build(),
 ];
 
 const modeStarts = [0, 2, 4, 5, 7, 9, 11];
 const indexForMode = (mode: MajorMode): number => {
   const modeIndex = Object.keys(MajorModes).indexOf(mode);
   return modeStarts[modeIndex];
-}
+};
 
+export const ScaleInfo: FC<{
+  scaleStart?: Note;
+  scaleMode?: MajorMode;
+  namingConvention: "easy" | "technical" | "both";
+  patternConvention: "whole-clusters" | "whole-half" | "hide";
+}> = ({ scaleStart, scaleMode, namingConvention, patternConvention }) => {
+  if (scaleStart === undefined || scaleMode === undefined) {
+    return null;
+  }
+
+  const noteName = prettyNoteName(scaleStart);
+  const modeName = prettyModeName(scaleMode, namingConvention);
+
+  return (
+    <div className="scale-info">
+      <div className="scale-name">
+        {noteName} {modeName}
+      </div>
+      {patternConvention === "hide" ? null : (
+        <div className="pattern-info">
+          <span className="header">Pattern</span>
+          <span className="value">
+            {prettyPattern(scaleMode, patternConvention)}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const Keyboard: FC<{
   from: Note;
@@ -38,6 +82,8 @@ export const Keyboard: FC<{
   canTranspose?: boolean;
   canChangeMode?: boolean;
   staticHighlighters?: KeyHighlighter[];
+  namingConvention?: "easy" | "technical" | "both";
+  patternConvention?: "whole-clusters" | "whole-half" | "hide";
 }> = ({
   from,
   to,
@@ -48,6 +94,8 @@ export const Keyboard: FC<{
   canTranspose = false,
   canChangeMode = false,
   staticHighlighters = [],
+  namingConvention = "both",
+  patternConvention = "whole-clusters",
 }) => {
   const globalOptions = useContext(GlobalOptionsContext);
   const player = useContext(SoundPlayerContext);
@@ -56,7 +104,8 @@ export const Keyboard: FC<{
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [didFadeIn, setDidFadeIn] = useState(false);
   const [playRequested, setPlayRequested] = useState(false);
-  const [currentHighlighters, setHighlighters] = useState<KeyHighlighter[]>(staticHighlighters);
+  const [currentHighlighters, setHighlighters] =
+    useState<KeyHighlighter[]>(staticHighlighters);
   const [currentScaleStart, setCurrentScaleStart] = useState(scaleStart);
   const [currentScaleMode, setCurrentScaleMode] = useState(scaleMode);
 
@@ -71,21 +120,36 @@ export const Keyboard: FC<{
 
   // Effect to update highlighters.
   useEffect(() => {
-    if (staticHighlighters.length > 0 || currentScaleStart === undefined || currentScaleMode === undefined || notes === null) {
+    if (
+      staticHighlighters.length > 0 ||
+      currentScaleStart === undefined ||
+      currentScaleMode === undefined ||
+      notes === null
+    ) {
       return;
     }
-    const backgroundHl = globalOptions.kbBackgroundHighlightEnabled ? WholeToneLightBG : [];
+    const backgroundHl = globalOptions.kbBackgroundHighlightEnabled
+      ? WholeToneLightBG
+      : [];
     const scaleHl = new ModeBuilder(currentScaleStart)
-    .ModeNamed(currentScaleMode)
-    .ColorDual()
-    .BracketsRunNumbers()
-    .Animate(shouldAnimate).build();
+      .ModeNamed(currentScaleMode)
+      .ColorDual()
+      .BracketsRunNumbers()
+      .Animate(shouldAnimate)
+      .build();
     for (const note of notes) {
       note.playable = false;
     }
     setHighlighters([...backgroundHl, scaleHl]);
     setLastTopNote(-1);
-  }, [currentScaleMode, currentScaleStart, globalOptions.kbBackgroundHighlightEnabled, notes, shouldAnimate, staticHighlighters.length]);
+  }, [
+    currentScaleMode,
+    currentScaleStart,
+    globalOptions.kbBackgroundHighlightEnabled,
+    notes,
+    shouldAnimate,
+    staticHighlighters.length,
+  ]);
 
   // Initial effect to set up notes.
   useEffect(() => {
@@ -196,6 +260,12 @@ export const Keyboard: FC<{
   return (
     <>
       <div className={`keyboard-wrapper ${sizeClass}`}>
+        <ScaleInfo
+          scaleStart={currentScaleStart}
+          scaleMode={currentScaleMode}
+          namingConvention={namingConvention}
+          patternConvention={patternConvention}
+        ></ScaleInfo>
         <div className={`keyboard ${sizeClass}`}>
           {notes?.map((note) => {
             return <Key key={noteIndex(note)} note={note}></Key>;
@@ -213,7 +283,7 @@ export const Keyboard: FC<{
                 onChange={onSliderChange}
               />
             </div>
-            {(canTranspose && currentScaleStart !== undefined) ? (
+            {canTranspose && currentScaleStart !== undefined ? (
               <div className="kb-slider">
                 <QueueMusicIcon />
                 <Slider
@@ -233,9 +303,9 @@ export const Keyboard: FC<{
                 />
               </div>
             ) : undefined}
-            {(canChangeMode && currentScaleMode !== undefined) ? (
+            {canChangeMode && currentScaleMode !== undefined ? (
               <div className="kb-slider">
-                <PaletteIcon/>
+                <PaletteIcon />
                 <Slider
                   color="secondary"
                   size="small"

@@ -24,6 +24,17 @@ const accidentalOffset = (acc: Accidental): number => {
   return 0;
 };
 
+export const noteName = (note: Note, octTranspose?: number): string => {
+  const prettyName = prettyNoteName(note);
+  const oct = (note.oct ?? 0) + (octTranspose ?? 0);
+  return `${prettyName}${oct}`;
+}
+
+export const prettyNoteName = (note: Note): string => {
+  const acc = note.acc ? note.acc : "";
+  return `${note.name}${acc}`;
+}
+
 export const noteNamed = (name: string): Note => {
   const naturalName = name.substring(0, 1) as NaturalNote;
   let acc: Accidental = undefined;

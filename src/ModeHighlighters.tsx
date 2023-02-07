@@ -1,10 +1,72 @@
 import { Note } from "./Notes";
 import { KeyHighlighter, KeyHighlighterOptionsBuilder } from "./KeyHighlighter";
 
-export type MajorMode = "Ionian" | "Dorian" | "Phrygian" | "Lydian" | "Mixolydian" | "Aeolian" | "Locrian";
+export type MajorMode =
+  | "Ionian"
+  | "Dorian"
+  | "Phrygian"
+  | "Lydian"
+  | "Mixolydian"
+  | "Aeolian"
+  | "Locrian"
+  | "Whole Tone";
 type MajorModeMap = {
   [key in MajorMode]: number[];
 };
+
+export function prettyModeName(
+  scaleMode: MajorMode,
+  convention: "easy" | "technical" | "both"
+): string {
+  switch (scaleMode) {
+    case "Ionian":
+      return convention === "easy"
+        ? "Major"
+        : convention === "technical"
+        ? "Ionian"
+        : "Major (Ionian)";
+    case "Aeolian":
+      return convention === "easy"
+        ? "Minor"
+        : convention === "technical"
+        ? "Aeolian"
+        : " Minor (Aeolian)";
+    default:
+      return scaleMode;
+  }
+}
+
+export function prettyPattern(
+  scaleMode: MajorMode,
+  convention: "whole-clusters" | "whole-half"
+): string {
+  const pattern = MajorModes[scaleMode];
+  if (convention === "whole-clusters") {
+    return pattern.join(", ");
+  }
+  // Whole halfs
+  let result = "";
+  let halfs = 0;
+  let steps = [];
+  for (const cluster of pattern) {
+    if (result.length > 0) {
+      result += ", ";
+    }
+    for (let i = 1; i < cluster; i++) {
+      steps.push("W");
+      halfs += 2;
+    }
+    if (halfs === 10) {
+      // Special case for scales that end in a whole step.
+      steps.push("W");
+      halfs += 2;
+    } else {
+      steps.push("H");
+      halfs += 1;
+    }
+  }
+  return steps.join(", ");
+}
 
 export const MajorModes: MajorModeMap = {
   Ionian: [3, 4],
@@ -14,6 +76,8 @@ export const MajorModes: MajorModeMap = {
   Mixolydian: [3, 3, 1],
   Aeolian: [2, 3, 2],
   Locrian: [1, 3, 3],
+  // Special case: Whole tone scale
+  "Whole Tone": [6],
 };
 
 class ModeHighlighterOptionsBuilder extends KeyHighlighterOptionsBuilder {
@@ -25,7 +89,8 @@ class ModeHighlighterOptionsBuilder extends KeyHighlighterOptionsBuilder {
 }
 
 export class ModeBuilder {
-  private _opts: ModeHighlighterOptionsBuilder = new ModeHighlighterOptionsBuilder();
+  private _opts: ModeHighlighterOptionsBuilder =
+    new ModeHighlighterOptionsBuilder();
   constructor(startNote: Note) {
     this._opts.startNote(startNote);
   }

@@ -37,7 +37,7 @@ function Introduction() {
         I won't go into great detail about how the different modes sound or when
         they are useful. There is a lot of great content out there on that
         subject, that you can find by searching for "music theory modes". What I
-        want to focus on is a method for identifying and memorizig the notes in
+        want to focus on is a method for identifying and memorizing the notes in
         each mode using the piano keyboard as a visual aide.
         <br />
         <br />
@@ -45,7 +45,7 @@ function Introduction() {
         pattern that you may be used to: "whole, whole, half, whole, whole,
         whole, half" (don't worry if you're not familiar, we will review it
         below) and instead teaches you to see the scales as alternating groups
-        of differnt kinds of notes "3 of one then 4 of another".
+        of different kinds of notes "3 of one then 4 of another".
         <br />
         <br /> What are these two kinds of notes? Well in interest of not
         burying the lede I'm talking about the two whole tone scales and looking
@@ -86,7 +86,7 @@ function TraditionalMethod() {
         (w, w, h, w, w, w, h)
         <br />
         <br />
-        Starting at the root note anotated 'r' below, "Whole (w)" means to skip
+        Starting at the root note annotated 'r' below, "Whole (w)" means to skip
         a key on the keyboard, and "Half (h)" means to move to the key next to
         the current one without skipping. Notice that that last 'h' in the
         pattern brings us back to the root note an octave above and the pattern
@@ -151,10 +151,10 @@ function WholeToneScales() {
         <br />
         The whole tone scales are the scales you get when you start on a note
         and jump whole steps all the way up the keyboard until the next octave.
-        You'll notice that whereever you start there are always 6 whole steps
+        You'll notice that wherever you start there are always 6 whole steps
         before the pattern repeats. One fun thing about these scales is that
         they might remind you of the "dream sequence" transition sound that you
-        hear in old movies and tv shows.
+        hear in old movies and TV shows.
         <br />
         <br />
         So starting on C we can make a whole tone scale like this:
@@ -202,7 +202,7 @@ function WholeToneScales() {
         above until it starts making sense and becomes intuitive to you
         visually.
       </p>
-      <h3>... putting them togehter</h3>
+      <h3>... putting them together</h3>
       <p>
         Since these two whole-tone scales comprise every note on the keyboard
         but have no overlap we can visualize the keyboard as if it were made of
@@ -254,7 +254,7 @@ function MajorScalePattern() {
         As you can see above the C major scale is a pattern of 3 whole-tones
         from one scale, and then 4 from the other.
         <br />
-        I hope you'll agree that this much easier to rember than the traditional
+        I hope you'll agree that this much easier to remember than the traditional
         (w, w, h, w, w, w, h) formula, and maybe more importantly, you can just
         see the shape of the scale by really paying attention to that cluster of
         3 next to a cluster of 4.
@@ -309,7 +309,7 @@ function MinorScalePattern() {
         next A.
         <br />
         <br />
-        Notice that when we start on A the whole-tones have a differnt pattern,
+        Notice that when we start on A the whole-tones have a different pattern,
         now it's [2, 3, 2]. Starting on A, the minor scale has all white keys,
         but lets see what happens when you move this 2, 3, 2 pattern down to C
         (use the slider to explore).
@@ -342,7 +342,7 @@ const GenericModePattern: React.FC<{
         every white key up to the next {noteName}.
         <br />
         <br />
-        Notice that when we start on {noteName} the whole-tones have a differnt
+        Notice that when we start on {noteName} the whole-tones have a different
         pattern from our other modes thus far. The {modeName} pattern is [
         {patternString}]. Starting on {noteName}, the {modeName} mode has all
         white keys, but lets see what happens when you move this {patternString}{" "}
@@ -377,7 +377,7 @@ function MajorModesTutorial() {
             <MinorScalePattern />
             <h3>Other Major Modes</h3>
             I've used the word "mode" now a couple of times but haven't defined
-            it. A mode put simpily is a scale that is built by starting on any
+            it. A mode put simply is a scale that is built by starting on any
             white key and including all the white keys up to the next octave.
             <br />
             <br />
@@ -385,7 +385,7 @@ function MajorModesTutorial() {
             starting on C and the minor mode starting on A. These are just two
             of seven possible modes (since we have 7 white keys). Each of these
             modes have a different pattern of whole-tone clusters that we can
-            memorize, and they each also have a distict sound.
+            memorize, and they each also have a distinct sound.
             <br />
             <br />
             The seven modes are:
@@ -398,7 +398,7 @@ function MajorModesTutorial() {
               <li>Aeolean starting on A (also called Minor)</li>
               <li>Locrian starting on B</li>
             </ol>
-            Since we already coverd the first and sixth modes let's look at the
+            Since we already covered the first and sixth modes let's look at the
             remaining 5 below.
             <br />
             <br />

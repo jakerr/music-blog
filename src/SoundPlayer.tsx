@@ -189,7 +189,11 @@ export class SoundPlayer {
     if (this._synth === undefined) {
       this._synth = new FMSynth();
     }
-    this._synth.makeReady();
+    if (!this.isReady()) {
+      this._synth.makeReady();
+      // Don't queue up notes if we're not ready.
+      return;
+    }
     const noteStart = Math.max(this._nextNoteTime, this._synth!.contextTime());
     const noteLen = this._beatLength / length;
     const tones = notes.map((n) => noteIndex(n) + 12 * this._octave);

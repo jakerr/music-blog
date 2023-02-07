@@ -104,6 +104,17 @@
   color: white;
 }
 
+@media only screen and (max-width: 600px) {
+  body {
+    background-color: lightblue;
+  }
+  .key.black > .note-label {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-size: 0.5em;
+  }
+}
+
 .key.white > .note-label {
   color: #555;
 }

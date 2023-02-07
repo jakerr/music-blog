@@ -63,16 +63,8 @@ export const Keyboard: FC<{
   // Animate in.
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const intervalId = setInterval(() => {
-        setProgress((p) => {
-          const keyPerc = 1 / 37;
-          if (p + keyPerc >= 1) {
-            clearInterval(intervalId);
-            setDidFadeIn(true);
-          }
-          return p + 1 / 37;
-        });
-      }, 10);
+      setProgress(1.0);
+      setDidFadeIn(true);
     }, 300);
     return () => clearTimeout(timeoutId);
   }, []);
